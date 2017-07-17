@@ -2,13 +2,15 @@
   <div>6666</div>
 </template>
 
-<<script>
+<script>
 export default {
-  
+  mounted(){
+    this.$fetch();
+  }
 }
 </script>
 
-<<style lang="less">
+<style lang="less">
 
 </style>
 

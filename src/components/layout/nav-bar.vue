@@ -25,6 +25,7 @@ export default {
     background-color: #eef1f6;
     display: flex;
     align-items: center;
+    background-color: #f3f3f3;
 }
 
 .shrink-btn{

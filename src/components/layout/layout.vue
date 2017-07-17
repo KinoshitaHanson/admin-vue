@@ -2,6 +2,7 @@
     <div class="app-wrapper">
         <side-bar></side-bar>
         <div class="main-wrapper">
+            <tool-bar></tool-bar>
             <nav-bar></nav-bar>
             <app-main></app-main>
         </div>
@@ -12,13 +13,15 @@
 import AppMain from './app-main';
 import SideBar from './side-bar';
 import NavBar from './nav-bar';
+import ToolBar from './tool-bar';
 
 export default {
     name: 'layout',
     components: {
         AppMain,
         SideBar,
-        NavBar
+        NavBar,
+        ToolBar
     }
 }
 </script>
@@ -29,6 +32,7 @@ export default {
     width: 100%;
     display: flex;
     flex-direction: row;
+    background-color: #f3f3f3;
 }
 
 .main-wrapper {
