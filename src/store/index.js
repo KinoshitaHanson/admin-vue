@@ -1,13 +1,17 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import authority from './modules/authority';
 import getters from './getters';
+
+import authority from './modules/authority';
+import user from './modules/user';
+
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   modules: {
-    authority
+    authority,
+    user
   },
   getters
 });

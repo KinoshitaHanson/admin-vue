@@ -28,20 +28,20 @@ export default {
 
 <style lang="less">
 .app-wrapper {
-    height: 100%;
+    height: 100vh;
     width: 100%;
     display: flex;
     flex-direction: row;
     background-color: #f3f3f3;
+    // overflow-x: hidden;
 }
 
 .main-wrapper {
     display: flex;
     flex-direction: column;
-    width:100%;
+    width: 100%;
+    overflow-x: hidden;
 }
-
-
 
 </style>
 
