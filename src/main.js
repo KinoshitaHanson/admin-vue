@@ -4,6 +4,7 @@ import Vue from 'vue';
 import ElementUI from 'element-ui';
 import router from './router';
 import store from './store';
+import nprogress from 'nprogress';
 
 import App from './App';
 
@@ -11,6 +12,8 @@ import fetch from './plugins/fetch/fetch';
 
 import 'element-ui/lib/theme-default/index.css';
 import 'styles/normalize.css';
+import 'styles/common.css';
+import 'nprogress/nprogress.css';// Progress 进度条 样式
 
 Vue.config.productionTip = false;
 
@@ -19,20 +22,25 @@ Vue.use(fetch);
 
 
 router.beforeEach((to, from, next) => {
+  nprogress.start()
   if (store.getters.routesAdd.length == 0) {
-    console.log('initRoutes');
     store.dispatch('GenerateRoutes', null).then(() => {
-      console.log(store.getters.routesAdd)
       router.addRoutes(store.getters.routesAdd);
-      console.log({...to});
-      console.log(to);
-      next({...to});
+      next({ ...to });
     });
   } else {
     next();
   }
-
 });
+
+router.afterEach(() => nprogress.done());
+
+if (process.env == 'production') {
+  Vue.config.errorHandler = function (err, vm) {
+    console.log(err);
+  }
+}
+
 
 /* eslint-disable no-new */
 new Vue({

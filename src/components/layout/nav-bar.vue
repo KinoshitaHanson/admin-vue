@@ -1,8 +1,8 @@
 <template>
     <div class="nav-bar-wrapper">
-        <div class="shrink-btn">
+        <!-- <div class="shrink-btn">
             <i class="el-icon-menu"></i>
-        </div>
+        </div> -->
         <el-breadcrumb class="nav-bar__bread" separator="/">
             <!-- <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>活动管理</el-breadcrumb-item>
@@ -52,7 +52,7 @@ export default {
 }
 
 .nav-bar__bread {
-    padding-left: 10px;
+    padding-left: 12px;
 }
 </style>
 

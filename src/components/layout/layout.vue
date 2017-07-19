@@ -28,12 +28,12 @@ export default {
 
 <style lang="less">
 .app-wrapper {
-    height: 100vh;
+    // height: 100vh;
     width: 100%;
     display: flex;
     flex-direction: row;
     background-color: #f3f3f3;
-    // overflow-x: hidden;
+    min-height: 100vh;
 }
 
 .main-wrapper {
@@ -41,7 +41,9 @@ export default {
     flex-direction: column;
     width: 100%;
     overflow-x: hidden;
+    margin-left: 250px;
 }
+
 
 </style>
 

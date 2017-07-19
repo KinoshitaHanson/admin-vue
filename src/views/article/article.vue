@@ -60,6 +60,7 @@
 
 <script>
 export default {
+    name: 'article',
     data() {
         return {
             tableData: [
@@ -158,6 +159,7 @@ export default {
             currentPage2: 5,
             currentPage3: 5,
             currentPage4: 4,
+            dataList: [],
             options: [{
                 value: 'zhinan',
                 label: '指南',
@@ -375,6 +377,28 @@ export default {
         handleChange(value) {
 
         }
+    },
+
+    created() {
+        // async function getData() {
+        //     return await $fetch.get('/management/article/select', { num: 1, size: 20 });
+        // }
+        // this.dataList = getData();
+        // console.log(this.dataList);
+        // this.$fetch.get('/management/article/select', { num: 1, size: 20 }).then
+
+
+    },
+    mounted() {
+        // async function getData() {
+        //     return await this.$fetch.get('/management/article/select', { num: 1, size: 20 });
+        // }
+        // this.dataList = getData();
+        // console.log(this.dataList);
+        this.$fetch.get('/management/article/select', { num: 1, size: 20 }).then((res) => {
+            this.dataList = res;
+            console.log(this.dataList);
+        });
     }
 }
 </script>

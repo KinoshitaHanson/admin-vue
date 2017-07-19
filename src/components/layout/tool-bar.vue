@@ -18,7 +18,7 @@
         </div>
         <div class="tool-bar__right">
             <div class="user-section">
-                <el-dropdown trigger="click">
+                <el-dropdown trigger="click" class="user__info">
                     <!-- <span class="el-dropdown-link">
                             <div class="user__avatar"></div>
                             <div class="user__hello">Hi,Makiyo！</div>
@@ -32,7 +32,7 @@
                     </div>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item>帮助</el-dropdown-item>
-                        <el-dropdown-item>档案</el-dropdown-item>
+                        <el-dropdown-item>设置</el-dropdown-item>
                         <el-dropdown-item divided>登出</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -119,6 +119,10 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.user__info{
+    cursor: pointer;
 }
 </style>
 
