@@ -20,6 +20,14 @@ Vue.config.productionTip = false;
 Vue.use(ElementUI);
 Vue.use(fetch);
 
+let client = new OSS.Wrapper({
+  region: 'oss-cn-hangzhou',
+  accessKeyId: 'LTAIKc4SmxqXnWjb',
+  accessKeySecret: 'n2mZHgH4SfHCaTOips4iuR2h4NOsjo',
+  bucket: 'ddup-img1'
+});
+
+Vue.prototype.$client = client;
 
 router.beforeEach((to, from, next) => {
   nprogress.start()

@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import './layout.less';
 import AppMain from './app-main';
 import SideBar from './side-bar';
 import NavBar from './nav-bar';
@@ -27,23 +28,6 @@ export default {
 </script>
 
 <style lang="less">
-.app-wrapper {
-    // height: 100vh;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    background-color: #f3f3f3;
-    min-height: 100vh;
-}
-
-.main-wrapper {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    overflow-x: hidden;
-    margin-left: 250px;
-}
-
 
 </style>
 

@@ -18,13 +18,7 @@
         </div>
         <div class="tool-bar__right">
             <div class="user-section">
-                <el-dropdown trigger="click" class="user__info">
-                    <!-- <span class="el-dropdown-link">
-                            <div class="user__avatar"></div>
-                            <div class="user__hello">Hi,Makiyo！</div>
-                            <i class="el-icon-caret-bottom"></i>
-                        </span> -->
-    
+                <el-dropdown trigger="click" class="user__info"  @command="handleMoreClick">
                     <div class="avatar-wrapper">
                         <div class="user__avatar"></div>
                         <div class="user__hello">Hi,Makiyo！</div>
@@ -33,11 +27,11 @@
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item>帮助</el-dropdown-item>
                         <el-dropdown-item>设置</el-dropdown-item>
-                        <el-dropdown-item divided>登出</el-dropdown-item>
+                        <el-dropdown-item divided command="logout">登出</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
                 <!-- <div class="user__avatar"></div>
-                                    <div class="user__hello">Hi,Makiyo！</div> -->
+                                        <div class="user__hello">Hi,Makiyo！</div> -->
             </div>
         </div>
     </div>
@@ -54,76 +48,20 @@ export default {
     methods: {
         handleIconClick() {
 
+        },
+
+        handleMoreClick(command) {
+            console.log('command')
+            if (command == 'logout') {
+                this.$router.push({ path: '/Login' })
+            }
         }
     }
 }
 </script>
 
 <style lang="less">
-.tool-bar-wrapper {
-    height: 80px;
-    width: 100%;
-    background-color: #f9f9f9; //#eef1f6;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
 
-.tool-bar__left {
-    display: flex;
-    margin-left: 48px;
-}
-
-.tool-bar__right {
-    display: flex;
-    margin-right: 24px;
-}
-
-.tool-bar__section {
-    margin-left: 12px;
-}
-
-.msg-section {
-    background-color: #fff
-}
-
-.reminder-section {}
-
-.search-section {
-    margin-left: 12px;
-    input {
-        border: 1px solid rgba(191, 203, 217, 0);
-        background-color: #f3f3f3;
-    }
-}
-
-.user-section {
-    display: flex;
-    align-items: center;
-    .user__avatar {
-        width: 30px;
-        height: 30px; // background-color: #fefefe;
-        border-radius: 36px;
-        background-image: url(../../assets/avatar.png);
-        background-repeat: no-repeat;
-        background-size: 100%;
-    }
-    .user__hello {
-        padding-left: 6px;
-        font-size: 14px;
-        color: #777;
-    }
-}
-
-.avatar-wrapper{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.user__info{
-    cursor: pointer;
-}
 </style>
 
 

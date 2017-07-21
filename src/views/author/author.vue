@@ -3,17 +3,13 @@
         <div class="form-container">
             <el-form :inline="true" :model="form" class="demo-form-inline">
                 <el-form-item label="Id">
-                    <el-input v-model="form.id" placeholder="文章Id"></el-input>
+                    <el-input v-model="form.id" placeholder="作者Id"></el-input>
                 </el-form-item>
-                <el-form-item label="标题">
-                    <el-input v-model="form.title" placeholder="文章标题"></el-input>
+                <el-form-item label="作者名称">
+                    <el-input v-model="form.name" placeholder="作者名称"></el-input>
                 </el-form-item>
-                <el-form-item label="创建时间">
-                    <el-date-picker v-model="form.dateRange" type="daterange" placeholder="选择日期范围">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="文章归属">
-                    <el-cascader :options="options" v-model="form.category" @change="handleChange">
+                <el-form-item label="板块归属">
+                    <el-cascader :options="sectionTree" v-model="form.category" @change="handleChange">
                     </el-cascader>
                 </el-form-item>
                 <el-form-item label="状态">
@@ -31,21 +27,15 @@
         </div>
         <div class="table-container">
             <el-table :data="tableData" stripe style="width: 100%">
-                <el-table-column prop="id" label="Id" width="80">
+                <el-table-column prop="id" label="Id" width="60">
                 </el-table-column>
-                <el-table-column prop="title" label="标题" min-width="180">
+                <el-table-column prop="name" label="作者名称">
                 </el-table-column>
-                <el-table-column prop="category" label="文章归属" width="180">
+                <el-table-column prop="category" label="板块归属">
                 </el-table-column>
-                <el-table-column prop="pv" label="浏览量">
+                <el-table-column prop="recommend" label="是否推荐" width="120">
                 </el-table-column>
-                <el-table-column prop="upvote" label="点赞数">
-                </el-table-column>
-                <el-table-column prop="comment" label="评论数">
-                </el-table-column>
-                <el-table-column prop="transmit" label="转发数">
-                </el-table-column>
-                <el-table-column prop="tags" label="所打标签">
+                <el-table-column prop="property" label="属性" width="100">
                 </el-table-column>
                 <el-table-column label="操作" width="180">
                     <template scope="scope">
@@ -55,7 +45,7 @@
                 </el-table-column>
             </el-table>
             <div class="pagin-container">
-                <el-pagination @current-change="handleCurrentChange" :current-page.sync="pageIndex" :page-size="pageSize" layout="total, prev, pager, next" :total="totalCount">
+                <el-pagination v-show="sourceData.length>0" @current-change="handleCurrentChange" :current-page.sync="pageIndex" :page-size="pageSize" layout="total, prev, pager, next" :total="totalCount">
                 </el-pagination>
             </div>
         </div>
@@ -66,27 +56,27 @@
 <script>
 import * as enums from 'utils/enum';
 import sectionTreeSource from 'api/sectionTree';
-import { ArticleSelect } from 'api';
+import { AuthorSelect } from 'api';
 
 export default {
-    name: 'Article',
+    name: 'Author',
 
     data() {
         return {
-            sourceData: [
-            ],
+            sourceData: [],
             form: {
                 id: '',
-                title: '',
-                category: [],
-                status: '',
-                dateRange: []
+                name: '',
+                category: [''],
+                status: ''
             },
             totalCount: 0,
             pageIndex: 1,
             pageSize: 15,
             loading: true,
-            options: [],
+            authorTypeEnum: enums.AuthorType,
+            recommendEnum: enums.IsRecommend,
+            sectionTree: sectionTreeSource
         }
     },
 
@@ -94,16 +84,16 @@ export default {
         tableData() {
             return this.sourceData.map(m => {
                 return {
-                    id: m.articleId,
-                    title: m.title,
-                    category: [m.father, m.son, m.grandson].filter(t => t).join('/'),
-                    pv: m.viewCount,
-                    upvote: m.praiseCount,
-                    comment: m.discussCount,
-                    transmit: m.shareCount
+                    id: m.authorId,
+                    name: m.name,
+                    category: [m.father, m.son, m.grandson].filter(m => m).join('/'),
+                    recommend: this.recommendEnum[m.leak],
+                    property: this.authorTypeEnum[m.type],
                 }
             });
         }
+
+
     },
 
     methods: {
@@ -119,9 +109,8 @@ export default {
                 this.pageIndex = 1
             };
         },
-
-        deleteRow(i) {
-            console.log(i);
+        deleteRow(id) {
+            console.log(id);
         },
 
         editRow(id) {
@@ -131,11 +120,11 @@ export default {
         onAdd() {
             this.$router.push({ path: 'Add' })
         },
-
         handleChange(value) {
 
         },
 
+        //数据源查询
         async getData() {
             let loading = this.$loading({
                 target: '.table-container',
@@ -143,23 +132,18 @@ export default {
             })
 
             let params = {
-                articleId: this.form.id,
-                title: this.form.title,
-                start: this.form.dateRange[0],
-                end: this.form.dateRange[1],
-                status: this.form.status,
+                authorId: this.form.id,
+                name: this.form.name,
                 father: this.form.category[0],
                 son: this.form.category[1],
                 grandson: this.form.category[2],
-                // label:this.form.id,
-                // editor:this.form.id,
-                num: this.pageIndex,
-                size: this.pageSize,
+                status: this.form.status,
+                num:this.pageIndex,
+                size:this.pageSize
             }
 
             try {
-                let res = await ArticleSelect(params);
-
+                let res = await AuthorSelect(params);
                 if (res.result) {
                     this.sourceData = res.map;
 
@@ -176,7 +160,8 @@ export default {
             }
 
             loading.close();
-        }
+
+        },
     },
 
     created() {
