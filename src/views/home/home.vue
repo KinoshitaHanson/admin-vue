@@ -1,11 +1,20 @@
 <template>
-  <div>6666</div>
+  <div>
+    <todo-list></todo-list>
+  </div>
 </template>
 
 <script>
+import todoList from '@/components/todolist/todolist';
+
 export default {
-  mounted(){
-  }
+
+  components: {
+    todoList
+  },
+
+  mounted() {
+  },
 }
 </script>
 
