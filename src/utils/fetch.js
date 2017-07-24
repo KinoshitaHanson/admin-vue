@@ -1,9 +1,5 @@
 import axios from 'axios';
 
-let baseUrl = '';
-let token = '';
-let timeout = 30000;
-
 
 const service = axios.create({
     baseURL: baseUrl,

@@ -136,17 +136,23 @@ export default {
                 status: this.form.status
             }
 
-            let res = await this.$fetch.get('/management/banner/select', { params: Object.assign(params, { num: pageIndex, size: pageSize }) });
-            if (res.result) {
-                this.sourceData = res.map;
 
-            } else {
-                this.sourceData = [];
-                console.log(res.message)
-            }
+            try {
+                let res = await this.$fetch.get('/management/banner/select', { params: Object.assign(params, { num: pageIndex, size: pageSize }) });
+                if (res.result) {
+                    this.sourceData = res.map;
 
-            if (this.totalCount != res.count && (res.count != 0 || !res.result)) {
-                this.totalCount = res.count;
+                } else {
+                    this.sourceData = [];
+                    console.log(res.message)
+                }
+
+                if (this.totalCount != res.count && (res.count != 0 || !res.result)) {
+                    this.totalCount = res.count;
+                }
+            } catch (error) {
+                loading.close();
+
             }
             loading.close();
         }
