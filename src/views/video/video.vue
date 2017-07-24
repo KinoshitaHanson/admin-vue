@@ -195,13 +195,6 @@ export default {
     },
 
     created() {
-        // async function getData() {
-        //     return await $fetch.get('/management/article/select', { num: 1, size: 20 });
-        // }
-        // this.dataList = getData();
-        // console.log(this.dataList);
-        // this.$fetch.get('/management/article/select', { num: 1, size: 20 }).then
-
 
     },
     mounted() {
