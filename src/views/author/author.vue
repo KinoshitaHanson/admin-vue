@@ -132,7 +132,7 @@ export default {
             })
 
             let params = {
-                authorId: this.form.id,
+                authorId: this.form.id||0,
                 name: this.form.name,
                 father: this.form.category[0],
                 son: this.form.category[1],
@@ -157,6 +157,7 @@ export default {
                 }
             } catch (error) {
                 console.log(error)
+                this.$message.error('查询异常！');
             }
 
             loading.close();

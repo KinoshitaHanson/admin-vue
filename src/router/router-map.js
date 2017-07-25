@@ -7,7 +7,8 @@ const home = r => require.ensure([], () => r(require("views/home/home")), "home"
 const article = r => require.ensure([], () => r(require("views/article/article")), "article");
 const articleAdd = r => require.ensure( [], () => r(require("views/article/article-add")), "articleAdd" );
 const video = r => require.ensure([], () => r(require("views/video/video")), "video");
-const galleryAd = r => require.ensure( [], () => r(require("views/advertisement/gallery")), "galleryAd" );
+const adGallery = r => require.ensure( [], () => r(require("views/advertisement/gallery")), "ad-gallery" );
+const adGalleryAdd = r => require.ensure( [], () => r(require("views/advertisement/gallery-add")), "ad-gallery-add" );
 const author = r => require.ensure([], () => r(require("views/author/author")), "author");
 const authorAdd = r => require.ensure([], () => r(require("views/author/author-add")), "authorAdd");
 const tagRecommendLayout = r => require.ensure([], () => r(require("views/tag-recommend")), "tagRecommend" );
@@ -104,14 +105,22 @@ export const asyncMap = [
     children: [
       {
         path: "Index",
-        component: galleryAd
+        component: adGallery
       },
       {
         path: "Add",
         name: "AdvertisementGalleryAdd",
-        component: articleAdd,
+        component: adGalleryAdd,
         meta: {
           text: "新增"
+        }
+      },
+      {
+        path: "Edit/:Id",
+        name: "AdvertisementGalleryEdit",
+        component: adGalleryAdd,
+        meta: {
+          text: "编辑"
         }
       }
     ]
@@ -234,82 +243,4 @@ export const asyncMap = [
       }
     ]
   }
-  // {
-  //   path: "/TagRecommend",
-  //   component: layout,
-  //   redirect: "/TagRecommend/Category",
-  //   name: "TagRecommend",
-  //   icon: "zujian",
-  //   meta: {
-  //     text: "标签推荐"
-  //   },
-  //   children: [
-  //     {
-  //       path: "/TagRecommend/Category",
-  //       component: tagRecommend,
-  //       redirect: "/TagRecommend/Category/Index",
-  //       meta: {
-  //         text: "分类页",
-  //       }
-  //     },
-  //     {
-  //       path: "/TagRecommend/Category/Index",
-  //       component: tagRecommend,
-  //       name: "TagRecommendCategory",
-  //       meta: {
-  //         text: "分类页",
-  //         hidden:true
-  //       }
-  //     },
-  //     {
-  //       path: "/TagRecommend/Category/Add",
-  //       component: tagRecommendAdd,
-  //       name: "TagRecommendCategoryAdd",
-  //       meta: {
-  //         hidden:true
-  //       }
-  //     },
-  //     {
-  //       path: "/TagRecommend/Category/Edit/:Id",
-  //       component: tagRecommendAdd,
-  //       name: "TagRecommendCategoryEdit",
-  //       meta: {
-  //         hidden:true
-  //       }
-  //     },
-  //     {
-  //       path: "/TagRecommend/Section",
-  //       component: tagRecommend,
-  //       redirect: "/TagRecommend/Section/Index",
-  //       meta: {
-  //         text: "板块页"
-  //       }
-  //     },
-  //     {
-  //       path: "/TagRecommend/Section/Index",
-  //       component: tagRecommend,
-  //       name: "TagRecommendSection",
-  //       meta: {
-  //          text: "板块页",
-  //         hidden:true
-  //       }
-  //     },
-  //     {
-  //       path: "/TagRecommend/Section/Add",
-  //       component: tagRecommendAdd,
-  //       name: "TagRecommendSectionAdd",
-  //       meta: {
-  //         hidden:true
-  //       }
-  //     },
-  //     {
-  //       path: "/TagRecommend/Section/Edit/:Id",
-  //       component: tagRecommendAdd,
-  //       name: "TagRecommendSectionEdit",
-  //       meta: {
-  //         hidden:true
-  //       }
-  //     }
-  //   ]
-  // }
 ];

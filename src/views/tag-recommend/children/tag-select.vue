@@ -56,6 +56,7 @@ export default {
 
         tagClickHandle(tag) {
             console.log(tag)
+            if(this.tagList.find(m=>m.id==tag.id))return;
             this.tagList.push(tag);
         },
 

@@ -1,39 +1,34 @@
 <template>
     <div class="form-wrapper">
         <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-            <el-form-item label="作者名称" prop="name">
-                <el-input v-model="form.name"></el-input>
+            <el-form-item label="广告类型" prop="type">
+                <el-select v-model="form.type" placeholder="请选择新归属">
+                    <el-option v-for="(item,index) in adType" :key="index" :label="item" :value="index"></el-option>
+                </el-select>
             </el-form-item>
-            <el-form-item label="头像" prop="avatar">
+            <el-form-item label="广告图片" prop="avatar">
                 <el-upload class="avatar-uploader" action="#" :http-request="upload" :auto-upload="true" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                     <img v-if="form.imageUrl" :src="form.imageUrl" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
             </el-form-item>
-            <el-form-item label="简介" prop="desc">
-                <el-input type="textarea" v-model="form.desc"></el-input>
-            </el-form-item>
-            <el-form-item label="老归属" prop="category">
-                <el-cascader :options="sectionTree" v-model="form.category" @change="handleChange">
-                </el-cascader>
-            </el-form-item>
-            <el-form-item label="新归属" prop="categoryNew">
-                <el-select v-model="form.categoryNew" placeholder="请选择新归属">
-                    <el-option v-for="o in sectionTree2" :key="o.name" :label="o.name" :value="o.value"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="属性" prop="property">
-                <el-radio-group v-model="form.property">
-                    <el-radio label="0">文章</el-radio>
-                    <el-radio label="1">视频</el-radio>
-                    <el-radio label="2">图片</el-radio>
+            <el-form-item label="关联模块" prop="module">
+                <el-radio-group v-model="form.module">
+                    <el-radio :label="0">文章</el-radio>
+                    <el-radio :label="1">视频</el-radio>
+                    <el-radio :label="2">活动</el-radio>
+                    <el-radio :label="3">H5链接</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="推荐" prop="recommend">
-                <el-select v-model="form.recommend" placeholder="">
-                    <el-option label="是" value="0"></el-option>
-                    <el-option label="否" value="1"></el-option>
-                </el-select>
+            <el-form-item label="跳转地址" prop="link">
+                <el-input v-model="form.link"></el-input>
+            </el-form-item>
+            <el-form-item label="外显时间" prop="releaseTime">
+                <el-date-picker v-model="form.releaseTime" type="datetime" placeholder="选择日期时间">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="广告标题" prop="title">
+                <el-input v-model="form.title"></el-input>
             </el-form-item>
             <el-form-item label="排序值" prop="sort">
                 <el-input type="sort" v-model.number="form.sort" auto-complete="off"></el-input>
@@ -54,51 +49,42 @@
 
 <script>
 import * as enums from 'utils/enum';
-import sectionTreeSource from 'api/sectionTree';
-import sectionTreeSource2 from 'api/sectionTree2';
-import { AuthorSelectOne, AuthorCommit } from 'api';
+import { AdGallerySelectOne, AdGalleryCommit } from 'api';
 
 export default {
 
-    name: 'AuthorAdd',
+    name: 'AdvertisementGalleryAdd',
 
     data() {
         return {
             form: {
-                id: 0,
-                name: '',
+                id:0,
+                type: '0',
+                title: '',
                 imageUrl: '',
-                desc: '',
-                category: [],
-                categoryNew: '',
-                property: '',
-                recommend: '1',
+                module: 0,
+                link: '',
+                releaseTime: '',
                 sort: '',
                 visible: '0',
             },
             rules: {
-                name: [
+                type: [
                     { required: true, message: '' }
                 ],
-                category: [
+                releaseTime: [
                     { required: true, message: '' }
                 ],
-                categoryNew: [
+                title: [
                     { required: true, message: '' }
-                ],
-                sort: [
-                    { required: true, message: '排序值不能为空' },
-                    { type: 'number', message: '排序值必须为数字值' }
                 ],
                 visible: [
                     { required: true, message: '' }
                 ]
             },
-            authorType: enums.AuthorType,
-            isRecommend: enums.IsRecommend,
-            sectionTree2: sectionTreeSource2,
-            sectionTree: sectionTreeSource,
-            btnLoading: false
+            btnLoading: false,
+            adType: enums.AdType
+
         }
     },
     methods: {
@@ -135,20 +121,18 @@ export default {
             this.$refs[formName].validate(async valid => {
                 if (valid) {
                     let data = {
-                        authorId: this.form.id,
-                        name: this.form.name,
-                        summary: this.form.desc,
-                        icon: this.form.imageUrl,
-                        father: this.form.category[0],
-                        son: this.form.category[1],
-                        grandson: this.form.category[2],
+                        bannerId: this.form.id,
+                        link: this.form.link,
+                        title: this.form.title,
                         weight: this.form.sort,
-                        type: this.form.property,
-                        leak: this.form.recommend,
-                        status: this.form.visible
+                        releaseTime: this.form.releaseTime,
+                        icon: this.form.imageUrl,
+                        mold: this.form.module,
+                        type: this.form.type,
+                        status: this.form.visible,
                     };
                     try {
-                        let res = await AuthorCommit(data);
+                        let res = await AdGalleryCommit(data);
                         if (res.result) {
                             this.$message.success('提交成功！');
                         } else {
@@ -172,18 +156,18 @@ export default {
                 body: true
             })
             let params = {
-                authorId: this.form.id,
+                bannerId: this.form.id,
             }
             try {
-                let res = await AuthorSelectOne(params);
+                let res = await AdGallerySelectOne(params);
                 if (res.result) {
-                    this.form.name = res.data.name;
+                    this.form.id=res.data.bannerId;
+                    this.form.type = res.data.type.toString();
+                    this.form.title = res.data.title;
                     this.form.imageUrl = res.data.icon;
-                    this.form.desc = res.data.summary;
-                    this.form.category = [res.data.father, res.data.son, res.data.grandson];
-                    this.form.categoryNew = res.data.newType==0?'':res.data.newType.toString();
-                    this.form.property = res.data.type;
-                    this.form.recommend = res.data.leak;
+                    this.form.module = res.data.mold;   
+                    this.form.link = res.data.link;
+                    this.form.releaseTime = res.data.releaseTime;
                     this.form.sort = res.data.weight;
                     this.form.visible = res.data.status;
 
@@ -198,7 +182,8 @@ export default {
         },
 
         onCancel() {
-            this.$router.push({path:'/Author'})
+            // history.go(-1);
+            this.$router.push({path:'/Advertisement/Gallery'})
         }
     },
 

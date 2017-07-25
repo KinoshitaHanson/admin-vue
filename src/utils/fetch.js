@@ -36,7 +36,7 @@ service.form = function (url, param) {
 service.interceptors.request.use(config => {
     for (var key in config.params) {
         if (config.params.hasOwnProperty(key)) {
-            if (!config.params[key]) {
+            if (config.params[key]==undefined||config.params[key]==null||config.params[key]=='') {
                 delete config.params[key];
             }
         }

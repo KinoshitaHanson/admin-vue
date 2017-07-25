@@ -143,7 +143,7 @@ export default {
             })
 
             let params = {
-                articleId: this.form.id,
+                articleId: this.form.id||0,
                 title: this.form.title,
                 start: this.form.dateRange[0],
                 end: this.form.dateRange[1],

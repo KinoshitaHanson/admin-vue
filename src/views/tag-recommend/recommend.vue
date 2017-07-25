@@ -8,7 +8,7 @@
                 </el-table-column>
                 <el-table-column prop="tags" label="所打标签">
                     <template scope="scope">
-                        <el-tag type="gray" v-for="(tag,index) in scope.row.tags" :key="index" color="#fff">{{tag.tagName}}</el-tag>
+                        <el-tag type="gray" v-if="tag.tagName" v-for="(tag,index) in scope.row.tags" :key="index"  color="#fff">{{tag.tagName}}</el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="180">

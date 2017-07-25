@@ -46,8 +46,8 @@
                 </el-table-column>
                 <el-table-column label="操作" width="180">
                     <template scope="scope">
-                        <el-button type="primary" icon="edit" @click.native.prevent="deleteRow(scope.$index)" size="small">编辑</el-button>
-                        <el-button type="primary" icon="delete" @click.native.prevent="deleteRow(scope.$index)" size="small">删除</el-button>
+                        <el-button type="primary" icon="edit" @click.native.prevent="editRow(scope.row.id)" size="small">编辑</el-button>
+                        <el-button type="primary" icon="delete" @click.native.prevent="deleteRow(scope.row.id)" size="small">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -62,9 +62,10 @@
 
 <script>
 import * as enums from 'utils/enum';
+import { AdGallerySelect } from 'api';
 
 export default {
-    name: 'GalleryAd',
+    name: 'AdvertisementGallery',
 
     data() {
         return {
@@ -91,7 +92,7 @@ export default {
                     type: enums.AdType[m.mold],
                     picture: m.icon,
                     releaseTime: m.releaseTime,
-                    module: enums.ModuleType[m.type],
+                    module: enums.ModuleType[m.type.toString()],
                     toId: m.link,
                     sort: m.weight
                 }
@@ -113,12 +114,19 @@ export default {
                 this.pageIndex = 1
             };
         },
+
+        editRow(id) {
+            this.$router.push({ path: 'Edit/' + id })
+        },
+
         deleteRow(i) {
             console.log(i);
         },
+
         onAdd() {
             this.$router.push({ path: 'Add' })
         },
+
         handleChange(value) {
 
         },
