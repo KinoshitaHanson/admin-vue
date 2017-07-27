@@ -14,6 +14,7 @@ const authorAdd = r => require.ensure([], () => r(require("views/author/author-a
 const tagRecommendLayout = r => require.ensure([], () => r(require("views/tag-recommend")), "tagRecommend" );
 const tagRecommend = r => require.ensure([], () => r(require("views/tag-recommend/recommend")), "tagRecommend" );
 const tagRecommendAdd = r => require.ensure([], () => r(require("views/tag-recommend/recommend-add")), "tagRecommendAdd" );
+const notFound = r => require.ensure([], () => r(require("views/error/404")), "notFound" );
 
 export const defaultMap = [
   {
@@ -65,6 +66,14 @@ export const asyncMap = [
         component: articleAdd,
         meta: {
           text: "新增"
+        }
+      },
+      {
+        path: "Edit/:Id",
+        name: "ArticleEdit",
+        component: articleAdd,
+        meta: {
+          text: "编辑"
         }
       }
     ]
@@ -242,5 +251,13 @@ export const asyncMap = [
         ]
       }
     ]
+  },
+  { 
+    path: '*', 
+    name:'NotFound',
+    component: notFound,
+    meta: {
+      hidden: true
+    },
   }
 ];

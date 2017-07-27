@@ -1,21 +1,19 @@
 import axios from 'axios';
+import store from '../store';
 
-
-
+let baseUrl = process.env == 'production' ? 'product' : 'http://101.37.32.213:18080/dm';
+let timeout = 30000;
 
 const service = axios.create({
     baseURL: baseUrl,
-    timeout: timeout,
-    headers: {
-        'authorization': token
-    }
+    timeout: timeout
 });
 
-service.form = function (url, param) {
+service.form = function (url, data) {
     return service({
         url: url,
         method: 'post',
-        data: param,
+        data,
         transformRequest: [function (data) {
             let ret = ''
             for (let it in data) {
@@ -25,7 +23,7 @@ service.form = function (url, param) {
         }],
         timeout: timeout,
         headers: {
-            'authorization': token,
+            'authorization': store.getters.token,
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     })
@@ -40,6 +38,10 @@ service.interceptors.request.use(config => {
                 delete config.params[key];
             }
         }
+    }
+
+    if (store.getters.token) {
+        config.headers['authorization'] = store.getters.token; // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
     }
 
     return config

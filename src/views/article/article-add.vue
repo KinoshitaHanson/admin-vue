@@ -7,26 +7,27 @@
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
-      <el-form-item label="标题" prop="name">
+      <el-form-item label="标题" prop="title">
         <el-input v-model="form.title"></el-input>
       </el-form-item>
-      <el-form-item label="作者" prop="name">
+      <el-form-item label="作者" prop="author">
         <el-input v-model="form.author"></el-input>
       </el-form-item>
       <el-form-item label="内容" prop="content">
-        <el-input type="textarea" v-model="form.content"></el-input>
+        <quill-editor v-model="form.content" ref="myQuillEditor" :options="editorOption">
+        </quill-editor>
       </el-form-item>
       <el-form-item label="音频图片" prop="audioPicture">
         <el-upload class="avatar-uploader" action="#" :http-request="audioImgUpload" :auto-upload="true" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
           <img v-if="form.audioImageUrl" :src="form.audioImageUrl" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
-        <el-form-item label="音频标题" prop="audioTitle">
-          <el-input v-model="form.audioTitle"></el-input>
-        </el-form-item>
-        <el-form-item label="音频作者" prop="audioAuthor">
-          <el-input v-model="form.audioAuthor"></el-input>
-        </el-form-item>
+      </el-form-item>
+      <el-form-item label="音频标题" prop="audioTitle">
+        <el-input v-model="form.audioTitle"></el-input>
+      </el-form-item>
+      <el-form-item label="音频作者" prop="audioAuthor">
+        <el-input v-model="form.audioAuthor"></el-input>
       </el-form-item>
       <el-form-item label="上传音频" prop="audio">
         <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove">
@@ -42,6 +43,9 @@
         <el-select v-model="form.categoryNew" placeholder="请选择新归属">
           <el-option v-for="o in sectionTree2" :key="o.name" :label="o.name" :value="o.value"></el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item label="打标签" prop="tags">
+        <tag-form :tagList.sync="form.tagList"></tag-form>
       </el-form-item>
       <el-form-item label="外显时间" prop="releaseTime">
         <el-date-picker v-model="form.releaseTime" type="datetime" placeholder="选择日期时间">
@@ -65,14 +69,24 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable';
+
 import * as enums from 'utils/enum';
 import sectionTreeSource from 'api/sectionTree';
 import sectionTreeSource2 from 'api/sectionTree2';
-import { AuthorSelectOne, AuthorCommit } from 'api';
+import { ArticleSelectOne, ArticleCommit } from 'api';
+import { quillEditor } from 'vue-quill-editor';
+import TagForm from '@/components/tag-select/tag-form-item';
 
 export default {
 
-  name: 'AuthorAdd',
+  name: 'ArticleAdd',
+
+  components: {
+    quillEditor,
+    TagForm,
+    draggable
+  },
 
   data() {
     return {
@@ -91,32 +105,41 @@ export default {
         releaseTime: '',
         sort: '',
         visible: '0',
+        tagList: []
       },
       rules: {
-        name: [
-          { required: true, message: '' }
+        title: [
+          { required: true, message: '请输入标题' }
         ],
-        category: [
-          { required: true, message: '' }
+        author: [
+          { required: true, message: '请输入作者Id' }
+        ],
+        content: [
+          { required: true, message: '请输入文章内容' }
         ],
         categoryNew: [
-          { required: true, message: '' }
-        ],
-        sort: [
-          { required: true, message: '排序值不能为空' },
-          { type: 'number', message: '排序值必须为数字值' }
+          { required: true, message: '请选择新归属' }
         ],
         visible: [
           { required: true, message: '' }
         ]
       },
+      addForm:{
+        name:'',
+        category:''
+      },
       authorType: enums.AuthorType,
       isRecommend: enums.IsRecommend,
       sectionTree2: sectionTreeSource2,
       sectionTree: sectionTreeSource,
-      btnLoading: false
+      btnLoading: false,
+      dialogVisible:false,
+      editorOption: {
+        // some quill options
+      }
     }
   },
+
   methods: {
     handleAvatarSuccess(res, file) {
 
@@ -169,20 +192,26 @@ export default {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           let data = {
-            authorId: this.form.id,
-            name: this.form.name,
-            summary: this.form.desc,
+            articleId: this.form.id,
+            title: this.form.title,
             icon: this.form.imageUrl,
+            authorId: this.form.author,
+            summary: this.form.content,
+            audioImageUrl: this.form.audioImageUrl,
+            audioAuthor: this.form.audioAuthor,
+            audioTitle: this.form.audioTitle,
+            audioLink: this.form.audioUrl,
             father: this.form.category[0],
             son: this.form.category[1],
             grandson: this.form.category[2],
+            tagCategory: this.form.categoryNew,
+            releaseTime: this.form.releaseTime,
             weight: this.form.sort,
-            type: this.form.property,
-            leak: this.form.recommend,
-            status: this.form.visible
+            status: this.form.visible,
+            tagBaseIdList: this.form.tagList.map(m => m.id).join(',')
           };
           try {
-            let res = await AuthorCommit(data);
+            let res = await ArticleCommit(data);
             if (res.result) {
               this.$message.success('提交成功！');
             } else {
@@ -206,20 +235,26 @@ export default {
         body: true
       })
       let params = {
-        authorId: this.form.id,
+        articleId: this.form.id,
       }
       try {
-        let res = await AuthorSelectOne(params);
+        let res = await ArticleSelectOne(params);
         if (res.result) {
-          this.form.name = res.data.name
-          this.form.imageUrl = res.data.icon
-          this.form.desc = res.data.summary
-          this.form.category = [res.data.father, res.data.son, res.data.grandson]
-          this.form.categoryNew = res.data.newType
-          this.form.property = res.data.type
-          this.form.recommend = res.data.leak
-          this.form.sort = res.data.weight
-          this.form.visible = res.data.status
+
+          this.form.title = res.data.title;
+          this.form.imageUrl = res.data.icon;
+          this.form.author = res.data.authorId;
+          this.form.content = res.data.summary;//
+          this.form.audioImageUrl = res.data.audioIcon;
+          this.form.audioTitle = res.data.audioTitle;
+          this.form.audioAuthor = res.data.audioAuthor;
+          this.form.audioUrl = res.data.audioLink;
+          this.form.category = [res.data.father, res.data.son, res.data.grandson];
+          this.form.categoryNew = res.data.tagCategory;
+          this.form.releaseTime = res.data.releaseTime;
+          this.form.sort = res.data.weight;
+          this.form.visible = res.data.status;
+          res.data.tagBaseIdList && (this.form.tagList = Array.of(res.data.tagBaseIdList));
 
         } else {
           this.$message.error(res.message);
@@ -233,7 +268,13 @@ export default {
 
     onCancel() {
       history.go(-1);
-    }
+    },
+
+    tagHandleClose(tag) {
+      console.log(tag);
+      this.form.tagList.splice(this.form.tagList.indexOf(tag), 1)
+    },
+
   },
 
   mounted() {

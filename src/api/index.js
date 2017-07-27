@@ -1,7 +1,17 @@
 import $fetch from 'utils/fetch';
+// let $fetch ={}
+
+//登录
+export const Login = (params) => {return $fetch.form('/management/admin/login', params)};
 
 //文章管理-查询
 export const ArticleSelect = (params) => $fetch.get('/management/article/select', { params });
+
+//文章管理-查询
+export const ArticleSelectOne = (params) => $fetch.get('/management/article/selectOne', { params });
+
+//文章管理-更新or新增
+export const ArticleCommit = (params) => $fetch.form('/management/article/insertOrUpdate', params);
 
 //广告图管理-查询
 export const AdGallerySelect = (params) => $fetch.get('/management/banner/select', { params });

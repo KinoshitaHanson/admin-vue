@@ -33,19 +33,22 @@
             <el-table :data="tableData" stripe style="width: 100%">
                 <el-table-column prop="id" label="Id" width="80">
                 </el-table-column>
-                <el-table-column prop="title" label="标题" min-width="180">
+                <el-table-column prop="title" label="标题" min-width="100">
                 </el-table-column>
                 <el-table-column prop="category" label="文章归属" width="180">
                 </el-table-column>
-                <el-table-column prop="pv" label="浏览量">
+                <el-table-column prop="pv" label="浏览量" width="100">
                 </el-table-column>
-                <el-table-column prop="upvote" label="点赞数">
+                <el-table-column prop="upvote" label="点赞数" width="100">
                 </el-table-column>
-                <el-table-column prop="comment" label="评论数">
+                <el-table-column prop="comment" label="评论数" width="100">
                 </el-table-column>
-                <el-table-column prop="transmit" label="转发数">
+                <el-table-column prop="transmit" label="转发数" width="100">
                 </el-table-column>
                 <el-table-column prop="tags" label="所打标签">
+                    <template scope="scope">
+                        <el-tag type="gray" v-if="tag.tagName" v-for="(tag,index) in scope.row.tagList" :key="index" color="#fff">{{tag.tagName}}</el-tag>
+                    </template>
                 </el-table-column>
                 <el-table-column label="操作" width="180">
                     <template scope="scope">
@@ -55,7 +58,7 @@
                 </el-table-column>
             </el-table>
             <div class="pagin-container">
-                <el-pagination @current-change="handleCurrentChange" :current-page.sync="pageIndex" :page-size="pageSize" layout="total, prev, pager, next" :total="totalCount">
+                <el-pagination v-show="sourceData.length>0" @current-change="handleCurrentChange" :current-page.sync="pageIndex" :page-size="pageSize" layout="total, prev, pager, next" :total="totalCount">
                 </el-pagination>
             </div>
         </div>
@@ -100,7 +103,8 @@ export default {
                     pv: m.viewCount,
                     upvote: m.praiseCount,
                     comment: m.discussCount,
-                    transmit: m.shareCount
+                    transmit: m.shareCount,
+                    tagList:m.tagBaseList
                 }
             });
         }
@@ -143,7 +147,7 @@ export default {
             })
 
             let params = {
-                articleId: this.form.id||0,
+                articleId: this.form.id || 0,
                 title: this.form.title,
                 start: this.form.dateRange[0],
                 end: this.form.dateRange[1],

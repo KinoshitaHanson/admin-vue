@@ -12,7 +12,8 @@
     flex-direction: column;
     width: 100%;
     overflow-x: hidden;
-    margin-left: 250px;
+    margin-left: 200px;
+    transition: all 0.5s;
 }
 
 .app-main-wrapper {
@@ -46,14 +47,16 @@
     // display: flex;
     // flex-direction: column;
     position: fixed;
-    width: 250px;
+    width: 200px;
     height: 100vh;
     overflow: hidden;
+    transition: 0.5s transform;
+    z-index: 888;
 }
 
 .side-bar-info {
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-end;
     align-items: center; // flex: 0 0 80px;
     background-color: #556e94;
     padding-left: 12px;
@@ -72,6 +75,7 @@
         background-image: url(../../assets/logo.png);
         background-repeat: no-repeat;
         background-size: 100%;
+        margin: 0 4px;
     }
     .side-bar__user {
         display: flex;
@@ -86,8 +90,9 @@
     flex: 1;
     border-radius: 0px;
     height: calc(~"100% - 30px");
-    width: 256px;
+    width: 206px; // width: 110%;
     overflow-y: scroll;
+    transition: 0.5s all;
 }
 
 //
@@ -101,8 +106,7 @@
 }
 
 .tool-bar__left {
-    display: flex;
-    margin-left: 48px;
+    display: flex; // margin-left: 48px;
 }
 
 .tool-bar__right {
@@ -154,6 +158,62 @@
 
 .user__info {
     cursor: pointer;
+}
+
+.collapse {
+    &.main-wrapper {
+        margin-left: 64px; 
+        .hamburger {
+            transform: rotate(90deg);
+        }
+    }
+    &.side-bar-wrapper {
+        transform: translate(-134px);
+        .side-bar-menu {
+            transform: translate(134px);
+        }
+        &:hover {
+            transform: translate(0, 0);
+            .side-bar-menu {
+                transform: translate(0, 0);
+            }
+            .el-menu-item>span,
+            .el-submenu__title>span {
+                opacity: 1;
+            }
+        }
+    }
+    .el-menu-item>span,
+    .el-submenu__title>span {
+        // margin-left: 26px;
+        opacity: 0;
+        transition: 0.5s all;
+    }
+}
+
+
+// .main-wrapper.collapse {
+//     margin-left: 64px;
+// }
+// .side-bar-wrapper.collapse {
+//     // width: 64px;
+//     transform: translate(-134px);
+//     :hover{
+//         transform: translate(0, 0);
+//     }
+// }
+// .collapse>.side-bar-menu {
+//     // width: 70px !important;
+//     transform: translate(134px);
+//      :hover {
+//         transform: translate(0, 0);
+//     }
+// }
+// .collapse>.side-bar-menu:hover.side-bar-wrapper.collapse{
+//     transform: translate(0, 0);
+// }
+.collapse>.side-bar-info {
+    // transform: translate(124px);
 }
 
 .fade-enter-active,

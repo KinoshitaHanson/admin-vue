@@ -6,7 +6,7 @@
                     <el-option v-for="o in sectionTree2" :key="o.name" :label="o.name" :value="o.value"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="打标签" prop="property">
+            <el-form-item label="打标签" prop="tags">
                 <draggable v-model="form.tagList" :options="{group:'people'}" @start="drag=true" @end="drag=false">
                     <transition-group type="transition" :name="'flip-list'">
                         <el-tag type="gray" color="#fff" v-for="(o,i) in form.tagList" :key="i" :closable="true" :close-transition="false" @close="tagHandleClose(o)">{{o.tagName}}</el-tag>
@@ -55,7 +55,7 @@ import draggable from 'vuedraggable'
 import sectionTreeSource2 from 'api/sectionTree2';
 import { TagRecommendSelect, TagRecommendUpdate,TagAdd,TagCategorySelect } from 'api';
 
-import TagSelect from './children/tag-select';
+import TagSelect from '@/components/tag-select/tag-select';
 
 export default {
     name: 'TagRecommendAdd',

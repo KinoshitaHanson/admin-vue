@@ -146,7 +146,7 @@ export default {
 
 
             try {
-                let res = await this.$fetch.get('/management/banner/select', { params: Object.assign(params, { num: pageIndex, size: pageSize }) });
+                let res = await AdGallerySelect(Object.assign(params, { num: pageIndex, size: pageSize }));
                 if (res.result) {
                     this.sourceData = res.map;
 
@@ -159,8 +159,7 @@ export default {
                     this.totalCount = res.count;
                 }
             } catch (error) {
-                loading.close();
-
+                console.log(error);
             }
             loading.close();
         }

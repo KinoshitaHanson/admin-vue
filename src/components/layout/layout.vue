@@ -1,7 +1,7 @@
 <template>
     <div class="app-wrapper">
-        <side-bar></side-bar>
-        <div class="main-wrapper">
+        <side-bar :class="{collapse:!sidebarStatus}"></side-bar>
+        <div class="main-wrapper" :class="{collapse:!sidebarStatus}">
             <tool-bar></tool-bar>
             <nav-bar></nav-bar>
             <app-main></app-main>
@@ -23,6 +23,12 @@ export default {
         SideBar,
         NavBar,
         ToolBar
+    },
+
+    computed:{
+        sidebarStatus(){
+            return this.$store.state.app.sidebarStatus;
+        }
     }
 }
 </script>
