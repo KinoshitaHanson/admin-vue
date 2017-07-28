@@ -10,7 +10,7 @@
         </el-popover>
         <el-button type="text" v-popover:popover>选择标签</el-button>
         <el-button type="text" @click="dialogVisible=true">新增标签</el-button>
-
+    
         <el-dialog title="新增标签" :visible.sync="dialogVisible" :show-close="false">
             <el-form ref="addForm" :model="addForm" label-width="80px">
                 <el-form-item label="标签名称">
@@ -38,13 +38,22 @@ import { TagAdd, TagCategorySelect } from 'api';
 export default {
     name: 'TagForm',
 
+    data() {
+        return {
+        }
+    },
+
+    computed: {
+
+    },
+
     components: {
         Draggable,
         TagSelect
     },
 
-    props:{
-        tagList:Array
+    props: {
+        tagList: Array
     },
 
     data() {
@@ -108,15 +117,24 @@ export default {
             this.addForm.name = '';
             this.addForm.category = 1;
         },
+
+        tagHandleClose(tag) {
+            console.log(tag);
+            this.tagList.splice(this.tagList.indexOf(tag), 1)
+        },
     },
 
-    mounted(){
+    mounted() {
         this.initTagCategory();
     }
 }
 </script>
 
-<style lang="less" >
+<style lang="less" scoped>
 
+
+.el-form-item {
+    margin-bottom: 22px;
+}
 </style>
 

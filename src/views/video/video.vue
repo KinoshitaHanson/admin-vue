@@ -3,23 +3,27 @@
         <div class="form-container">
             <el-form :inline="true" :model="form" class="demo-form-inline">
                 <el-form-item label="Id">
-                    <el-input v-model="form.id" placeholder="文章Id"></el-input>
+                    <el-input v-model="form.id" placeholder="视频Id"></el-input>
                 </el-form-item>
                 <el-form-item label="标题">
-                    <el-input v-model="form.title" placeholder="文章标题"></el-input>
+                    <el-input v-model="form.title" placeholder="视频标题"></el-input>
                 </el-form-item>
                 <el-form-item label="创建时间">
-                    <el-col :span="11">
-                        <el-date-picker type="date" placeholder="开始时间" v-model="form.startDate" style="width: 100%;"></el-date-picker>
-                    </el-col>
-                    <el-col class="line" :span="2">-</el-col>
-                    <el-col :span="11">
-                        <el-time-picker type="fixed-time" placeholder="结束时间" v-model="form.endDate" style="width: 100%;"></el-time-picker>
-                    </el-col>
+                    <el-date-picker v-model="form.dateRange" type="daterange" placeholder="选择日期范围">
+                    </el-date-picker>
                 </el-form-item>
-                <el-form-item label="文章归属">
-                    <el-cascader :options="options" v-model="form.category" @change="handleChange">
+                <el-form-item label="归属">
+                    <el-cascader :options="categoryTree" v-model="form.category">
                     </el-cascader>
+                </el-form-item>
+                <el-form-item label="新归属">
+                    <el-select v-model="form.categoryNew" placeholder="新归属">
+                        <el-option label="全部" value=""></el-option>
+                        <el-option v-for="o in categoryTreeNew" :key="o.value" :label="o.name" :value="o.name"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="标签">
+                    <el-input v-model="form.tag" placeholder="标签"></el-input>
                 </el-form-item>
                 <el-form-item label="状态">
                     <el-select v-model="form.status" placeholder="有效性">
@@ -36,124 +40,74 @@
         </div>
         <div class="table-container">
             <el-table :data="tableData" stripe style="width: 100%">
-                <el-table-column prop="id" label="Id">
+                <el-table-column prop="id" label="Id" width="80">
                 </el-table-column>
                 <el-table-column prop="title" label="标题" width="180">
                 </el-table-column>
-                <el-table-column prop="category" label="文章归属"  width="180">
+                <el-table-column prop="category" label="文章归属" width="180">
+                    <template scope="scope">
+                        <div style="margin-bottom:4px;">
+                            <span style="color:#00a2d4">旧:</span>{{scope.row.category}}</div>
+                        <div>
+                            <span style="color:#ff0000">新:</span>{{scope.row.categoryNew}}</div>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="pv" label="浏览量">
+                <el-table-column prop="pv" label="浏览量" width="100">
                 </el-table-column>
-                <el-table-column prop="upvote" label="点赞数">
+                <el-table-column prop="upvote" label="点赞数" width="100">
                 </el-table-column>
-                <el-table-column prop="comment" label="评论数">
+                <el-table-column prop="comment" label="评论数" width="100">
                 </el-table-column>
-                <el-table-column prop="transmit" label="转发数">
+                <el-table-column prop="transmit" label="转发数" width="100">
                 </el-table-column>
                 <el-table-column prop="tags" label="所打标签">
+                    <template scope="scope">
+                        <el-tag type="gray" v-if="tag.tagName" v-for="(tag,index) in scope.row.tagList" :key="index" color="#fff">{{tag.tagName}}</el-tag>
+                    </template>
                 </el-table-column>
                 <el-table-column label="操作" width="180">
                     <template scope="scope">
-                        <el-button type="primary" icon="edit" @click.native.prevent="deleteRow(scope.$index)" size="small">编辑</el-button>
-                        <el-button type="primary" icon="delete" @click.native.prevent="deleteRow(scope.$index)" size="small">删除</el-button>
+                        <el-button type="primary" icon="edit" @click.native.prevent="editRow(scope.row.id)" size="small">编辑</el-button>
+                        <el-button :type="scope.row.visible=='0'?'success':'danger'" icon="warning" :loading="scope.row.loading" @click.native.prevent="toggleStatus(scope.row)" size="small">{{scope.row.visible=='0'?'有效':'无效'}}</el-button>
                     </template>
                 </el-table-column>
             </el-table>
             <div class="pagin-container">
-                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage1" :page-size="20" layout="total, prev, pager, next" :total="totalCount">
+                <el-pagination v-show="sourceData.length>0" @current-change="handleCurrentChange" :current-page.sync="pageIndex" :page-size="pageSize" layout="total, prev, pager, next" :total="totalCount">
                 </el-pagination>
             </div>
         </div>
-    
     </div>
 </template>
 
 <script>
+import * as enums from 'utils/enum';
+import sectionTreeSource from 'api/sectionTree';
+import sectionTreeSource2 from 'api/sectionTree2';
+import { VideoSelect, VideoCommit } from 'api';
+
 export default {
-    name: 'Video',
+    name: 'Article',
 
     data() {
         return {
-            sourceData: [
-            ],
-            totalCount:0,
-            form: {
+            sourceData: [],//源数据
+            form: {//表单
                 id: '',
                 title: '',
                 category: [],
-                startDate: '',
-                endDate: '',
-                status: ''
+                categoryNew: '',
+                status: '',
+                dateRange: [],
+                tag:''
             },
-            loading: true,
-            currentPage1: 1,
-            options: [{
-                value: 'zhinan',
-                label: '指南',
-                children: [{
-                    value: 'shejiyuanze',
-                    label: '设计原则',
-                    children: [{
-                        value: 'yizhi',
-                        label: '一致'
-                    }, {
-                        value: 'fankui',
-                        label: '反馈'
-                    }, {
-                        value: 'xiaolv',
-                        label: '效率'
-                    }, {
-                        value: 'kekong',
-                        label: '可控'
-                    }]
-                }, {
-                    value: 'daohang',
-                    label: '导航',
-                    children: [{
-                        value: 'cexiangdaohang',
-                        label: '侧向导航'
-                    }, {
-                        value: 'dingbudaohang',
-                        label: '顶部导航'
-                    }]
-                }]
-            }, {
-                value: 'zujian',
-                label: '组件',
-                children: [{
-                    value: 'basic',
-                    label: 'Basic',
-                    children: [{
-                        value: 'layout',
-                        label: 'Layout 布局'
-                    }, {
-                        value: 'color',
-                        label: 'Color 色彩'
-                    }, {
-                        value: 'typography',
-                        label: 'Typography 字体'
-                    }, {
-                        value: 'icon',
-                        label: 'Icon 图标'
-                    }, {
-                        value: 'button',
-                        label: 'Button 按钮'
-                    }]
-                }]
-            }, {
-                value: 'ziyuan',
-                label: '资源',
-                children: [{
-                    value: 'axure',
-                    label: 'Axure Components'
-                }, {
-                    value: 'sketch',
-                    label: 'Sketch Templates'
-                }, {
-                    value: 'jiaohu',
-                    label: '组件交互文档'
-                }]
-            }],
+            totalCount: 0,//总数
+            pageIndex: 1,//页码
+            pageSize: 15,//页长
+            loading: true,//载入画面
+            statusLoading: false,//状态修改载入
+            categoryTree: sectionTreeSource,
+            categoryTreeNew: sectionTreeSource2,
         }
     },
 
@@ -161,78 +115,125 @@ export default {
         tableData() {
             return this.sourceData.map(m => {
                 return {
-                    id: m.articleId,
+                    id: m.videoId,
                     title: m.title,
-                    category: `${m.father}/${m.son}/${m.grandson}`,
+                    category: [m.father, m.son, m.grandson].filter(t => t).join('/'),
+                    categoryNew: m.name,
                     pv: m.viewCount,
                     upvote: m.praiseCount,
                     comment: m.discussCount,
-                    transmit: m.shareCount
+                    transmit: m.shareCount,
+                    tagList: m.tagBaseList,
+                    visible: m.status,
+                    loading: false
                 }
             });
         }
     },
 
     methods: {
-        handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
-        },
         handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
+            this.pageIndex = val;
+            this.getData();
         },
+
         onSubmit() {
 
+            if (this.pageIndex == 1) {
+                this.getData()
+            } else {
+                this.pageIndex = 1
+            };
         },
-        deleteRow(i) {
-            console.log(i);
+
+        async toggleStatus(o) {
+            o.loading = true;
+            let toStatus = o.visible == 0 ? 1 : 0;
+            let data = {
+                status: toStatus,
+                videoId: o.id
+            };
+            try {
+                let res = await VideoCommit(data);
+                if (res.result) {
+                    toStatus == 0 ? this.$message.success('已设置为有效！') : this.$message.warning('已设置为无效！');
+                    o.visible = toStatus;
+                } else {
+                    this.$message.error('提交异常！');
+                }
+            } catch (error) {
+                this.$message.error('提交异常！' + error.toString());
+            }
+            o.loading = false;
         },
+
+        editRow(id) {
+            this.$router.push({ path: 'Edit/' + id })
+        },
+
         onAdd() {
-            this.$router.push({ path: 'add' })
+            this.$router.push({ path: 'Add' })
         },
+
         handleChange(value) {
 
+        },
+
+        async getData() {
+            let loading = this.$loading({
+                target: '.table-container',
+                body: true
+            })
+
+            let params = {
+                videoId: this.form.id || 0,
+                title: this.form.title,
+                start: this.form.dateRange[0],
+                end: this.form.dateRange[1],
+                status: this.form.status,
+                father: this.form.category[0],
+                son: this.form.category[1],
+                grandson: this.form.category[2],
+                tagCategory: this.form.categoryNew,
+                num: this.pageIndex,
+                size: this.pageSize,
+            }
+
+            try {
+                let res = await VideoSelect(params);
+
+                if (res.result) {
+                    this.sourceData = res.map;
+
+                } else {
+                    this.sourceData = [];
+                    console.log(res.message)
+                }
+
+                if (this.totalCount != res.count && (res.count != 0 || !res.result)) {
+                    this.totalCount = res.count;
+                }
+            } catch (error) {
+                console.log(error)
+            }
+
+            loading.close();
         }
     },
 
     created() {
 
+
     },
     mounted() {
-        var _self = this;
-
-        var loading = this.$loading({
-            target: '.table-container',
-            body: true
-        })
-
-        this.$fetch.get('/management/article/select', { params: { num: 1, size: 20 } }).then((res) => {
-            this.sourceData = res.map;
-            this.totalCount=res.count;
-            loading.close();
-        });
-
+        this.getData();
     }
 }
 </script>
 
 
-<style lang="less" scoped>
-.form-container {
-    margin-bottom: 12px;
-    border-bottom: 1px solid #efefef;
-}
+<style lang="less" >
 
-.pagin-container {
-    margin: 12px 0;
-    text-align: center;
-}
-
-.table-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center; // height: 100%;
-}
 </style>
 
 

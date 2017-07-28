@@ -19,7 +19,7 @@
                 </el-badge>
             </div>
             <div class="tool-bar__section search-section">
-                <el-input placeholder="搜索" icon="search" v-model="input2" :on-icon-click="handleIconClick">
+                <el-input placeholder="搜索" icon="search" v-model="searchKey" :on-icon-click="handleIconClick">
                 </el-input>
             </div>
         </div>
@@ -28,7 +28,7 @@
                 <el-dropdown trigger="click" class="user__info" @command="handleMoreClick">
                     <div class="avatar-wrapper">
                         <div class="user__avatar"></div>
-                        <div class="user__hello">Hi,Makiyo！</div>
+                        <div class="user__hello">Hi~ {{userName}}！</div>
                         <i class="el-icon-caret-bottom"></i>
                     </div>
                     <el-dropdown-menu slot="dropdown">
@@ -46,7 +46,9 @@
 export default {
     data() {
         return {
-            input2: ''
+            searchKey: '',
+            userName:this.$store.state.user.name
+
         }
     },
 

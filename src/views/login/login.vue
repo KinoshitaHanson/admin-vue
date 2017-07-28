@@ -1,5 +1,5 @@
 <template>
-    <div class="login-section">
+    <div class="login-section" @keyup.enter="submitForm('ruleForm2')">
         <div class="section__logo"></div>
         <div class="section__text">
             <h1>New</h1>

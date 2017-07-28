@@ -34,7 +34,7 @@ service.form = function (url, data) {
 service.interceptors.request.use(config => {
     for (var key in config.params) {
         if (config.params.hasOwnProperty(key)) {
-            if (config.params[key]==undefined||config.params[key]==null||config.params[key]=='') {
+            if (config.params[key]===undefined||config.params[key]===null||config.params[key]==='') {
                 delete config.params[key];
             }
         }
@@ -43,7 +43,6 @@ service.interceptors.request.use(config => {
     if (store.getters.token) {
         config.headers['authorization'] = store.getters.token; // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
     }
-
     return config
 }, error => {
     return Promise.reject(error);

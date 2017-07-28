@@ -10,7 +10,7 @@ import App from "./App";
 import fetch from "./plugins/fetch/fetch";
 
 import "styles/normalize.css";
-import "styles/common.css";
+import "styles/common";
 import "element-ui/lib/theme-default/index.css";
 import "nprogress/nprogress.css"; // Progress 进度条 样式
 

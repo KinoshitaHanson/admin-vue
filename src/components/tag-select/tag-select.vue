@@ -101,7 +101,12 @@ export default {
 }
 </script>
 
-<style lang="less" >
+<style lang="less" scoped>
+
+.el-tag {
+    margin: 0 4px 0 0;    
+    cursor: pointer;
+}
 
 .tag-select__wrapper {
     user-select: none;

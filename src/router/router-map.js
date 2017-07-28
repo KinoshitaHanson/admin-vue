@@ -7,6 +7,7 @@ const home = r => require.ensure([], () => r(require("views/home/home")), "home"
 const article = r => require.ensure([], () => r(require("views/article/article")), "article");
 const articleAdd = r => require.ensure( [], () => r(require("views/article/article-add")), "articleAdd" );
 const video = r => require.ensure([], () => r(require("views/video/video")), "video");
+const videoAdd = r => require.ensure([], () => r(require("views/video/video-add")), "videoAdd");
 const adGallery = r => require.ensure( [], () => r(require("views/advertisement/gallery")), "ad-gallery" );
 const adGalleryAdd = r => require.ensure( [], () => r(require("views/advertisement/gallery-add")), "ad-gallery-add" );
 const author = r => require.ensure([], () => r(require("views/author/author")), "author");
@@ -14,6 +15,8 @@ const authorAdd = r => require.ensure([], () => r(require("views/author/author-a
 const tagRecommendLayout = r => require.ensure([], () => r(require("views/tag-recommend")), "tagRecommend" );
 const tagRecommend = r => require.ensure([], () => r(require("views/tag-recommend/recommend")), "tagRecommend" );
 const tagRecommendAdd = r => require.ensure([], () => r(require("views/tag-recommend/recommend-add")), "tagRecommendAdd" );
+const tag = r => require.ensure([], () => r(require("views/tag/tag")), "tag" );
+const tagAdd = r => require.ensure([], () => r(require("views/tag/tag-add")), "tagAdd" );
 const notFound = r => require.ensure([], () => r(require("views/error/404")), "notFound" );
 
 export const defaultMap = [
@@ -33,9 +36,9 @@ export const defaultMap = [
     redirect: "/Home",
     meta: {
       text: "首页",
-      noDropDown: true
+      noDropDown: true,
+      icon:'star-on',
     },
-    noDropDown: true,
     children: [
       {
         path: "Home",
@@ -53,7 +56,8 @@ export const asyncMap = [
     redirect: "/Article/Index",
     meta: {
       text: "文章管理",
-      noDropDown: true
+      noDropDown: true,
+      icon:'star-on'      
     },
     children: [
       {
@@ -85,7 +89,8 @@ export const asyncMap = [
     redirect: "/Viedo/Index",
     meta: {
       text: "视频管理",
-      noDropDown: true
+      noDropDown: true,
+      icon:'star-on'      
     },
     children: [
       {
@@ -95,9 +100,17 @@ export const asyncMap = [
       {
         path: "Add",
         name: "VideoAdd",
-        component: articleAdd,
+        component: videoAdd,
         meta: {
           text: "新增"
+        }
+      },
+      {
+        path: "Edit/:Id",
+        name: "VideoEdit",
+        component: videoAdd,
+        meta: {
+          text: "编辑"
         }
       }
     ]
@@ -109,7 +122,8 @@ export const asyncMap = [
     redirect: "/Advertisement/Gallery/Index",
     meta: {
       text: "广告图管理",
-      noDropDown: true
+      noDropDown: true,
+      icon:'star-on',      
     },
     children: [
       {
@@ -141,7 +155,8 @@ export const asyncMap = [
     redirect: "/Author/Index",
     meta: {
       text: "作者管理",
-      noDropDown: true
+      noDropDown: true,
+      icon:'menu',            
     },
     children: [
       {
@@ -167,13 +182,47 @@ export const asyncMap = [
     ]
   },
   {
+    path: "/Tag",
+    component: layout,
+    name: "Tag",
+    redirect: "/Tag/Index",
+    meta: {
+      text: "标签管理",
+      noDropDown: true,
+      icon:'menu',            
+    },
+    children: [
+      {
+        path: "Index",
+        component: tag
+      },
+      {
+        path: "Add",
+        name: "TagAdd",
+        component: tagAdd,
+        meta: {
+          text: "新增"
+        }
+      },
+      {
+        path: "Edit/:Id",
+        name: "TagEdit",
+        component: tagAdd,
+        meta: {
+          text: "编辑"
+        }
+      }
+    ]
+  },
+  {
     path: "/TagRecommend",
     component: layout,
     redirect: "/TagRecommend/Category",
     name: "TagRecommend",
     icon: "zujian",
     meta: {
-      text: "标签推荐"
+      text: "标签推荐",
+      icon:'menu',            
     },
     children: [
       {
@@ -181,7 +230,8 @@ export const asyncMap = [
         component: tagRecommendLayout,
         redirect: "/TagRecommend/Category/Index",
         meta: {
-          text: "分类页"
+          text: "分类页",
+          icon:'menu',                
         },
         children: [
           {
@@ -218,7 +268,8 @@ export const asyncMap = [
         component: tagRecommendLayout,
         redirect: "/TagRecommend/Section/Index",
         meta: {
-          text: "板块页"
+          text: "板块页",
+          icon:'menu',                
         },
         children: [
           {

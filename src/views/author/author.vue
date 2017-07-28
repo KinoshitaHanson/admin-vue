@@ -29,9 +29,13 @@
             <el-table :data="tableData" stripe style="width: 100%">
                 <el-table-column prop="id" label="Id" width="60">
                 </el-table-column>
-                <el-table-column prop="name" label="作者名称">
+                <el-table-column prop="name" label="作者名称" width="180">
                 </el-table-column>
                 <el-table-column prop="category" label="板块归属">
+                    <template scope="scope">
+                        <div style="margin-bottom:4px;"><span style="color:#00a2d4">旧:</span>{{scope.row.category}}</div>
+                        <div><span style="color:#ff0000">新:</span>{{scope.row.categoryNew}}</div>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="recommend" label="是否推荐" width="120">
                 </el-table-column>
@@ -40,7 +44,8 @@
                 <el-table-column label="操作" width="180">
                     <template scope="scope">
                         <el-button type="primary" icon="edit" @click.native.prevent="editRow(scope.row.id)" size="small">编辑</el-button>
-                        <el-button type="primary" icon="delete" @click.native.prevent="deleteRow(scope.row.id)" size="small">删除</el-button>
+                        <!-- <el-button type="primary" icon="delete" @click.native.prevent="deleteRow(scope.row.id)" size="small">删除</el-button> -->
+                        <el-button :type="scope.row.visible=='0'?'success':'danger'" icon="warning" :loading="scope.row.loading" @click.native.prevent="toggleStatus(scope.row)" size="small">{{scope.row.visible=='0'?'有效':'无效'}}</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -56,7 +61,7 @@
 <script>
 import * as enums from 'utils/enum';
 import sectionTreeSource from 'api/sectionTree';
-import { AuthorSelect } from 'api';
+import { AuthorSelect,AuthorCommit } from 'api';
 
 export default {
     name: 'Author',
@@ -68,7 +73,7 @@ export default {
                 id: '',
                 name: '',
                 category: [''],
-                status: ''
+                status: '',
             },
             totalCount: 0,
             pageIndex: 1,
@@ -87,8 +92,11 @@ export default {
                     id: m.authorId,
                     name: m.name,
                     category: [m.father, m.son, m.grandson].filter(m => m).join('/'),
+                    categoryNew:m.tagCategoryName,
                     recommend: this.recommendEnum[m.leak],
                     property: this.authorTypeEnum[m.type],
+                    loading:false,
+                    visible:m.status
                 }
             });
         }
@@ -163,6 +171,28 @@ export default {
             loading.close();
 
         },
+
+        async toggleStatus(o) {
+            o.loading = true;
+            let toStatus = o.visible == 0 ? 1 : 0;
+            let data = {
+                status: toStatus,
+                authorId: o.id
+            };
+            try {
+                let res = await AuthorCommit(data);
+                if (res.result) {
+                    toStatus == 0 ? this.$message.success('已设置为有效！') : this.$message.warning('已设置为无效！');
+                    o.visible = toStatus;
+                } else {
+                    this.$message.error('提交异常！');
+                }
+            } catch (error) {
+                this.$message.error('提交异常！' + error.toString());
+            }
+            o.loading = false;
+        },
+
     },
 
     created() {

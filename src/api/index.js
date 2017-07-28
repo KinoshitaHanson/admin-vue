@@ -46,3 +46,13 @@ export const TagRecommendUpdate = (params)=> $fetch.post('/management/tagRecomme
 //标签分类-查询
 export const GetTagClassification = (params)=> $fetch.get('/management/tagLib/getTagClassification', { params });
 
+//视频管理-查询
+export const VideoSelect = (params)=> $fetch.get('/management/video/select', { params });
+
+//视频管理-查询
+export const VideoSelectOne = (params)=> $fetch.get('/management/video/selectOne', { params });
+
+//视频管理-更新or新增
+export const VideoCommit = (params)=> $fetch.form('/management/video/insertOrUpdate', params);
+
+

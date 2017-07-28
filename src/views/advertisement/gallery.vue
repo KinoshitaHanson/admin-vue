@@ -32,9 +32,8 @@
                 </el-table-column>
                 <el-table-column prop="picture" label="图片" width="180">
                     <template scope="scope">
-                        <img v-bind:src="scope.row.picture" />
+                        <img v-bind:src="scope.row.picture" @click="imgPreview(scope.row.picture)"/>
                     </template>
-    
                 </el-table-column>
                 <el-table-column prop="releaseTime" label="外显时间">
                 </el-table-column>
@@ -47,7 +46,7 @@
                 <el-table-column label="操作" width="180">
                     <template scope="scope">
                         <el-button type="primary" icon="edit" @click.native.prevent="editRow(scope.row.id)" size="small">编辑</el-button>
-                        <el-button type="primary" icon="delete" @click.native.prevent="deleteRow(scope.row.id)" size="small">删除</el-button>
+                        <el-button :type="scope.row.visible=='0'?'success':'danger'" icon="warning" :loading="scope.row.loading" @click.native.prevent="toggleStatus(scope.row)" size="small">{{scope.row.visible=='0'?'有效':'无效'}}</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -56,13 +55,17 @@
                 </el-pagination>
             </div>
         </div>
-    
+        <el-dialog title="预览" :visible.sync="dialogVisible" :lock-scroll="true">
+            <el-card :body-style="{ padding: '0px' }">
+                <img :src="previewImgUrl" class="image">
+            </el-card>
+        </el-dialog>
     </div>
 </template>
 
 <script>
 import * as enums from 'utils/enum';
-import { AdGallerySelect } from 'api';
+import { AdGallerySelect,AdGalleryCommit } from 'api';
 
 export default {
     name: 'AdvertisementGallery',
@@ -80,7 +83,9 @@ export default {
             loading: true,
             pageIndex: 1,
             pageSize: 15,
-            adType: enums.AdType
+            adType: enums.AdType,
+            dialogVisible: false,
+            previewImgUrl: ''
         }
     },
 
@@ -94,7 +99,9 @@ export default {
                     releaseTime: m.releaseTime,
                     module: enums.ModuleType[m.type.toString()],
                     toId: m.link,
-                    sort: m.weight
+                    sort: m.weight,
+                    loading:false,
+                    visible:m.status
                 }
             });
         }
@@ -162,6 +169,32 @@ export default {
                 console.log(error);
             }
             loading.close();
+        },
+
+        async toggleStatus(o) {
+            o.loading = true;
+            let toStatus = o.visible == 0 ? 1 : 0;
+            let data = {
+                status: toStatus,
+                bannerId: o.id
+            };
+            try {
+                let res = await AdGalleryCommit(data);
+                if (res.result) {
+                    toStatus == 0 ? this.$message.success('已设置为有效！') : this.$message.warning('已设置为无效！');
+                    o.visible = toStatus;
+                } else {
+                    this.$message.error('提交异常！');
+                }
+            } catch (error) {
+                this.$message.error('提交异常！' + error.toString());
+            }
+            o.loading = false;
+        },
+
+        imgPreview(url) {
+            this.previewImgUrl = url;
+            this.dialogVisible = true;
         }
     },
 
@@ -198,6 +231,10 @@ img {
     width: 100%;
     height: 100%;
     vertical-align: middle;
+}
+
+.cell>img{
+    cursor: pointer;
 }
 </style>
 

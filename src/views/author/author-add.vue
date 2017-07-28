@@ -78,13 +78,13 @@ export default {
             },
             rules: {
                 name: [
-                    { required: true, message: '' }
+                    { required: true, message: '请输入作者名称' }
                 ],
                 category: [
-                    { required: true, message: '' }
+                    { required: true, message: '请选择老归属' }
                 ],
                 categoryNew: [
-                    { required: true, message: '' }
+                    { required: true, message: '请选择新归属' }
                 ],
                 sort: [
                     { required: true, message: '排序值不能为空' },
@@ -142,8 +142,10 @@ export default {
                         father: this.form.category[0],
                         son: this.form.category[1],
                         grandson: this.form.category[2],
+                        tagCategory:this.form.categoryNew,
                         weight: this.form.sort,
                         type: this.form.property,
+                        newType: this.form.property,
                         leak: this.form.recommend,
                         status: this.form.visible
                     };
@@ -181,7 +183,7 @@ export default {
                     this.form.imageUrl = res.data.icon;
                     this.form.desc = res.data.summary;
                     this.form.category = [res.data.father, res.data.son, res.data.grandson];
-                    this.form.categoryNew = res.data.newType==0?'':res.data.newType.toString();
+                    this.form.categoryNew = res.data.tagCategory==0?'':res.data.tagCategory;
                     this.form.property = res.data.type;
                     this.form.recommend = res.data.leak;
                     this.form.sort = res.data.weight;
