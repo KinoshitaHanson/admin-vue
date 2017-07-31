@@ -19,8 +19,11 @@
                 <el-form-item label="新归属">
                     <el-select v-model="form.categoryNew" placeholder="新归属">
                         <el-option label="全部" value=""></el-option>
-                        <el-option v-for="o in categoryTreeNew" :key="o.value" :label="o.name" :value="o.name"></el-option>
+                        <el-option v-for="o in categoryTreeNew" :key="o.value" :label="o.name" :value="o.value"></el-option>
                     </el-select>
+                </el-form-item>
+                <el-form-item label="标签">
+                    <el-input v-model="form.tag" placeholder="标签"></el-input>
                 </el-form-item>
                 <el-form-item label="状态">
                     <el-select v-model="form.status" placeholder="有效性">
@@ -95,7 +98,8 @@ export default {
                 category: [],
                 categoryNew: '',
                 status: '',
-                dateRange: []
+                dateRange: [],
+                tag:''
             },
             totalCount: 0,//总数
             pageIndex: 1,//页码
@@ -192,8 +196,7 @@ export default {
                 son: this.form.category[1],
                 grandson: this.form.category[2],
                 tagCategory: this.form.categoryNew,
-                // label:this.form.id,
-                // editor:this.form.id,
+                tagName:this.form.tag,
                 num: this.pageIndex,
                 size: this.pageSize,
             }

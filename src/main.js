@@ -31,6 +31,10 @@ Vue.prototype.$client = client;
 const whiteList = ["/Login"];
 
 router.beforeEach((to, from, next) => {
+  //切换路由清除loading
+  if(document.getElementsByClassName('el-loading-mask').length>0)
+    document.body.removeChild(document.getElementsByClassName('el-loading-mask')[0])
+
   nprogress.start();
   if (store.getters.token) {
     if (store.getters.routesAdd.length == 0) {

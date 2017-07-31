@@ -19,7 +19,7 @@
                 <el-form-item label="新归属">
                     <el-select v-model="form.categoryNew" placeholder="新归属">
                         <el-option label="全部" value=""></el-option>
-                        <el-option v-for="o in categoryTreeNew" :key="o.value" :label="o.name" :value="o.name"></el-option>
+                        <el-option v-for="o in categoryTreeNew" :key="o.value" :label="o.name" :value="o.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="标签">
@@ -87,7 +87,7 @@ import sectionTreeSource2 from 'api/sectionTree2';
 import { VideoSelect, VideoCommit } from 'api';
 
 export default {
-    name: 'Article',
+    name: 'Video',
 
     data() {
         return {
@@ -194,6 +194,7 @@ export default {
                 father: this.form.category[0],
                 son: this.form.category[1],
                 grandson: this.form.category[2],
+                tagName:this.form.tag,
                 tagCategory: this.form.categoryNew,
                 num: this.pageIndex,
                 size: this.pageSize,
@@ -227,7 +228,9 @@ export default {
     },
     mounted() {
         this.getData();
-    }
+    },
+
+
 }
 </script>
 

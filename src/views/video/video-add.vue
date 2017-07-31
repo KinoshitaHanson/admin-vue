@@ -2,7 +2,7 @@
   <div class="form-wrapper">
     <el-form ref="form" :model="form" :rules="rules" label-width="80px">
       <el-form-item label="图片" prop="coverPicture">
-        <el-upload class="avatar-uploader" action="#" :http-request="coverImgUpload" :auto-upload="true" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+        <el-upload class="avatar-uploader" action="#" :http-request="imgUpload" :auto-upload="true" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
           <img v-if="form.imageUrl" :src="form.imageUrl" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
@@ -10,30 +10,26 @@
       <el-form-item label="标题" prop="title">
         <el-input v-model="form.title"></el-input>
       </el-form-item>
-      <el-form-item label="作者" prop="author">
+      <el-form-item label="Up主" prop="author">
         <el-input v-model="form.author"></el-input>
       </el-form-item>
-      <el-form-item label="内容" prop="content">
-        <quill-editor v-model="form.content" ref="myQuillEditor" :options="editorOption">
+      <el-form-item label="简介" prop="content" style="height:500px;">
+        <!-- <el-input
+          type="textarea"
+          :autosize="{ minRows: 4, maxRows: 10}"
+          placeholder="请输入内容"
+          v-model="form.content">
+        </el-input> -->
+        <quill-editor v-model="form.content" ref="myQuillEditor" :options="quillOption" style="height:400px;">
         </quill-editor>
       </el-form-item>
-      <el-form-item label="音频图片" prop="audioPicture">
-        <el-upload class="avatar-uploader" action="#" :http-request="audioImgUpload" :auto-upload="true" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-          <img v-if="form.audioImageUrl" :src="form.audioImageUrl" class="avatar">
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+      <el-form-item label="链接" prop="url">
+        <el-input v-model="form.url"></el-input>
       </el-form-item>
-      <el-form-item label="音频标题" prop="audioTitle">
-        <el-input v-model="form.audioTitle"></el-input>
-      </el-form-item>
-      <el-form-item label="音频作者" prop="audioAuthor">
-        <el-input v-model="form.audioAuthor"></el-input>
-      </el-form-item>
-      <el-form-item label="上传音频" prop="audio">
-        <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove">
-          <el-button size="small" type="primary">点击上传</el-button>
-          <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-        </el-upload>
+      <el-form-item label="视频时长" prop="videoTime">
+        <el-input-number v-model="form.videoTime[0]"></el-input-number> -
+        <el-input-number v-model="form.videoTime[1]"></el-input-number> -
+        <el-input-number v-model="form.videoTime[2]"></el-input-number>
       </el-form-item>
       <el-form-item label="老归属" prop="category">
         <el-cascader :options="sectionTree" v-model="form.category" @change="handleChange">
@@ -73,17 +69,17 @@
 import * as enums from 'utils/enum';
 import sectionTreeSource from 'api/sectionTree';
 import sectionTreeSource2 from 'api/sectionTree2';
-import { ArticleSelectOne, ArticleCommit } from 'api';
-import { quillEditor } from 'vue-quill-editor';
+import { VideoSelectOne, VideoCommit } from 'api';
 import TagForm from '@/components/tag-select/tag-form-item';
+import { quillEditor } from 'vue-quill-editor';
 
 export default {
 
-  name: 'ArticleAdd',
+  name: 'VideoAdd',
 
   components: {
-    quillEditor,
     TagForm,
+    quillEditor
   },
 
   data() {
@@ -94,10 +90,8 @@ export default {
         title: '',
         author: '',
         content: '',
-        audioImageUrl: '',
-        audioTitle: '',
-        audioAuthor: '',
-        audioUrl: '',
+        url:'',
+        videoTime:[],
         category: [],
         categoryNew: '',
         releaseTime: '',
@@ -109,11 +103,8 @@ export default {
         title: [
           { required: true, message: '请输入标题' }
         ],
-        author: [
-          { required: true, message: '请输入作者Id' }
-        ],
-        content: [
-          { required: true, message: '请输入文章内容' }
+        url: [
+          { required: true, message: '请输入链接' }
         ],
         categoryNew: [
           { required: true, message: '请选择新归属' }
@@ -122,18 +113,11 @@ export default {
           { required: true, message: '' }
         ]
       },
-      addForm:{
-        name:'',
-        category:''
-      },
-      authorType: enums.AuthorType,
-      isRecommend: enums.IsRecommend,
       sectionTree2: sectionTreeSource2,
       sectionTree: sectionTreeSource,
       btnLoading: false,
-      dialogVisible:false,
-      editorOption: {
-        // some quill options
+      quillOption: {
+        
       }
     }
   },
@@ -175,14 +159,9 @@ export default {
       }
     },
 
-    async coverImgUpload(data) {
+    async imgUpload(data) {
       let url = await this.upload(data);
       this.form.imageUrl = url[0].replace('http', 'https');
-    },
-
-    async audioImgUpload(data) {
-      let url = await this.upload(data);
-      this.form.audioImageUrl = url[0].replace('http', 'https');
     },
 
     async onSubmit(formName) {
@@ -190,15 +169,13 @@ export default {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           let data = {
-            articleId: this.form.id,
+            videoId: this.form.id,
             title: this.form.title,
             icon: this.form.imageUrl,
             authorId: this.form.author,
             summary: this.form.content,
-            audioImageUrl: this.form.audioImageUrl,
-            audioAuthor: this.form.audioAuthor,
-            audioTitle: this.form.audioTitle,
-            audioLink: this.form.audioUrl,
+            link: this.form.url,
+            length: this.form.videoTime.join(':'),
             father: this.form.category[0],
             son: this.form.category[1],
             grandson: this.form.category[2],
@@ -209,7 +186,7 @@ export default {
             tagBaseIdList: this.form.tagList.map(m => m.id).join(',')
           };
           try {
-            let res = await ArticleCommit(data);
+            let res = await VideoCommit(data);
             if (res.result) {
               this.$message.success('提交成功！');
             } else {
@@ -233,20 +210,18 @@ export default {
         body: true
       })
       let params = {
-        articleId: this.form.id,
+        videoId: this.form.id,
       }
       try {
-        let res = await ArticleSelectOne(params);
+        let res = await VideoSelectOne(params);
         if (res.result) {
 
           this.form.title = res.data.title;
           this.form.imageUrl = res.data.icon;
           this.form.author = res.data.authorId;
-          this.form.content = res.data.summary;//
-          this.form.audioImageUrl = res.data.audioIcon;
-          this.form.audioTitle = res.data.audioTitle;
-          this.form.audioAuthor = res.data.audioAuthor;
-          this.form.audioUrl = res.data.audioLink;
+          this.form.url = res.data.link;
+          this.form.videoTime = res.data.length.split(':');
+          this.form.content = res.data.summary;
           this.form.category = [res.data.father, res.data.son, res.data.grandson];
           this.form.categoryNew = res.data.tagCategory;
           this.form.tagList = res.data.tagBaseList;

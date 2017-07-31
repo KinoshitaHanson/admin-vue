@@ -116,72 +116,6 @@ export const asyncMap = [
     ]
   },
   {
-    path: "/Advertisement/Gallery",
-    component: layout,
-    name: "AdvertisementGallery",
-    redirect: "/Advertisement/Gallery/Index",
-    meta: {
-      text: "广告图管理",
-      noDropDown: true,
-      icon:'star-on',      
-    },
-    children: [
-      {
-        path: "Index",
-        component: adGallery
-      },
-      {
-        path: "Add",
-        name: "AdvertisementGalleryAdd",
-        component: adGalleryAdd,
-        meta: {
-          text: "新增"
-        }
-      },
-      {
-        path: "Edit/:Id",
-        name: "AdvertisementGalleryEdit",
-        component: adGalleryAdd,
-        meta: {
-          text: "编辑"
-        }
-      }
-    ]
-  },
-  {
-    path: "/Author",
-    component: layout,
-    name: "Author",
-    redirect: "/Author/Index",
-    meta: {
-      text: "作者管理",
-      noDropDown: true,
-      icon:'menu',            
-    },
-    children: [
-      {
-        path: "Index",
-        component: author
-      },
-      {
-        path: "Add",
-        name: "AuthorAdd",
-        component: authorAdd,
-        meta: {
-          text: "新增"
-        }
-      },
-      {
-        path: "Edit/:Id",
-        name: "AuthorEdit",
-        component: authorAdd,
-        meta: {
-          text: "编辑"
-        }
-      }
-    ]
-  },
-  {
     path: "/Tag",
     component: layout,
     name: "Tag",
@@ -300,6 +234,72 @@ export const asyncMap = [
             }
           }
         ]
+      }
+    ]
+  },
+  {
+    path: "/Advertisement/Gallery",
+    component: layout,
+    name: "AdvertisementGallery",
+    redirect: "/Advertisement/Gallery/Index",
+    meta: {
+      text: "广告图管理",
+      noDropDown: true,
+      icon:'star-on',      
+    },
+    children: [
+      {
+        path: "Index",
+        component: adGallery
+      },
+      {
+        path: "Add",
+        name: "AdvertisementGalleryAdd",
+        component: adGalleryAdd,
+        meta: {
+          text: "新增"
+        }
+      },
+      {
+        path: "Edit/:Id",
+        name: "AdvertisementGalleryEdit",
+        component: adGalleryAdd,
+        meta: {
+          text: "编辑"
+        }
+      }
+    ]
+  },
+  {
+    path: "/Author",
+    component: layout,
+    name: "Author",
+    redirect: "/Author/Index",
+    meta: {
+      text: "作者管理",
+      noDropDown: true,
+      icon:'menu',            
+    },
+    children: [
+      {
+        path: "Index",
+        component: author
+      },
+      {
+        path: "Add",
+        name: "AuthorAdd",
+        component: authorAdd,
+        meta: {
+          text: "新增"
+        }
+      },
+      {
+        path: "Edit/:Id",
+        name: "AuthorEdit",
+        component: authorAdd,
+        meta: {
+          text: "编辑"
+        }
       }
     ]
   },

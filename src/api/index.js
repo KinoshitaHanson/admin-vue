@@ -31,8 +31,17 @@ export const AuthorSelectOne = (params) => $fetch.get('/management/author/select
 //作者管理-更新or新增
 export const AuthorCommit = (params) => $fetch.form('/management/author/insertOrUpdate', params);
 
+//标签管理-查询
+export const TagSelect = (params) => $fetch.get('/management/tagLib/selectTagBase',{params} );
+
+//标签管理-查询
+export const TagSelectOne = (params) => $fetch.get('/management/tagLib/selectTagBaseDetail',{params} );
+
 //标签管理-新增
 export const TagAdd = (params) => $fetch.post('/management/tagLib/addTagBase',null, {params});
+
+//标签管理-修改
+export const TagEdit = (params) => $fetch.post('/management/tagLib/updateTagBase',null, {params});
 
 //标签管理-标签归属查询
 export const TagCategorySelect = (params) => $fetch.get('/management/tagLib/getTagCategory',{params} );

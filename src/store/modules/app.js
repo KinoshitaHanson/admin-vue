@@ -3,7 +3,7 @@ import { setLocalStore, getLocalStore, removeLocalStore } from "utils/utils";
 
 export default {
   state: {
-    sidebarStatus: (getLocalStore("sidebarStatus") == "true")
+    sidebarStatus: ((getLocalStore("sidebarStatus")===null?"true":getLocalStore("sidebarStatus")) == "true")
   },
 
   mutations: {

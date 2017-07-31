@@ -13,8 +13,8 @@
       <el-form-item label="作者" prop="author">
         <el-input v-model="form.author"></el-input>
       </el-form-item>
-      <el-form-item label="内容" prop="content">
-        <quill-editor v-model="form.content" ref="myQuillEditor" :options="editorOption">
+      <el-form-item label="内容" prop="content"  style="height:500px;">
+        <quill-editor v-model="form.content" ref="myQuillEditor" :options="quillOption" style="height:400px;">
         </quill-editor>
       </el-form-item>
       <el-form-item label="音频图片" prop="audioPicture">
@@ -62,6 +62,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit('form')" :loading="btnLoading">提交</el-button>
+        <el-button type="info" @click="preview">预览</el-button>
         <el-button @click="onCancel">返回</el-button>
       </el-form-item>
     </el-form>
@@ -122,18 +123,10 @@ export default {
           { required: true, message: '' }
         ]
       },
-      addForm:{
-        name:'',
-        category:''
-      },
-      authorType: enums.AuthorType,
-      isRecommend: enums.IsRecommend,
       sectionTree2: sectionTreeSource2,
       sectionTree: sectionTreeSource,
       btnLoading: false,
-      dialogVisible:false,
-      editorOption: {
-        // some quill options
+      quillOption: {
       }
     }
   },
@@ -274,6 +267,12 @@ export default {
       this.form.tagList.splice(this.form.tagList.indexOf(tag), 1)
     },
 
+    preview(){
+      let id = this.form.id;
+      let url =`http://101.37.32.213/touch/view/article.html?articleId=${id}&childId=0`;
+      window.open(url);
+    }
+
   },
 
   mounted() {
@@ -316,6 +315,7 @@ export default {
   height: 178px;
   display: block;
 }
+
 </style>
 
 
