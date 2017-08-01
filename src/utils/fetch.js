@@ -1,7 +1,7 @@
 import axios from 'axios';
 import store from '../store';
 
-let baseUrl = process.env == 'production' ? 'product' : 'http://101.37.32.213:18080/dm';
+let baseUrl = process.env.API_ROOT;
 let timeout = 30000;
 
 const service = axios.create({
@@ -9,6 +9,11 @@ const service = axios.create({
     timeout: timeout
 });
 
+/**
+ * form请求
+ * @param url
+ * @param data
+ */
 service.form = function (url, data) {
     return service({
         url: url,
@@ -28,7 +33,6 @@ service.form = function (url, data) {
         }
     })
 }
-
 
 //请求拦截器
 service.interceptors.request.use(config => {

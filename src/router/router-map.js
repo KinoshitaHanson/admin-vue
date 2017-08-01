@@ -151,7 +151,7 @@ export const asyncMap = [
   {
     path: "/TagRecommend",
     component: layout,
-    redirect: "/TagRecommend/Category",
+    redirect: 'noredirect',
     name: "TagRecommend",
     icon: "zujian",
     meta: {

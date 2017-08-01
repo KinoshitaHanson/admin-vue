@@ -7,7 +7,8 @@ import store from "./store";
 import nprogress from "nprogress";
 
 import App from "./App";
-import fetch from "./plugins/fetch/fetch";
+import Fetch from "./plugins/fetch/fetch";
+import AliOss from "./plugins/alioss/alioss";
 
 import "styles/normalize.css";
 import "styles/common";
@@ -17,16 +18,8 @@ import "nprogress/nprogress.css"; // Progress 进度条 样式
 Vue.config.productionTip = false;
 
 Vue.use(ElementUI);
-Vue.use(fetch);
-
-let client = new OSS.Wrapper({
-  region: "oss-cn-hangzhou",
-  accessKeyId: "LTAIKc4SmxqXnWjb",
-  accessKeySecret: "n2mZHgH4SfHCaTOips4iuR2h4NOsjo",
-  bucket: "ddup-img1"
-});
-
-Vue.prototype.$client = client;
+Vue.use(Fetch);
+Vue.use(AliOss);
 
 const whiteList = ["/Login"];
 

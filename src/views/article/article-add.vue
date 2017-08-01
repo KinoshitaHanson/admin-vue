@@ -259,6 +259,7 @@ export default {
     },
 
     onCancel() {
+      // this.$router.back();
       history.go(-1);
     },
 

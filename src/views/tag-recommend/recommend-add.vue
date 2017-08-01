@@ -120,7 +120,6 @@ export default {
     },
 
     mounted() {
-        console.log(this.$route);
         this.form.id = this.$route.params.Id
         if (this.form.id) this.getData();
     },
