@@ -48,7 +48,7 @@ service.interceptors.request.use(config => {
     if (store.getters.token) {
         config.headers['authorization'] = store.getters.token; // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
     }
-    log.writeNormalLog('api-log',config,'info');
+    // log.writeNormalLog('api-log',config,'info');
     return config
 }, error => {
     log.writeExLog(error,'请求异常');
