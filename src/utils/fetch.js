@@ -1,5 +1,6 @@
 import axios from 'axios';
 import store from '../store';
+import log from 'utils/log';
 
 let baseUrl = process.env.API_ROOT;
 let timeout = 30000;
@@ -47,8 +48,10 @@ service.interceptors.request.use(config => {
     if (store.getters.token) {
         config.headers['authorization'] = store.getters.token; // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
     }
+    log.writeNormalLog('api-log',config,'info');
     return config
 }, error => {
+    log.writeExLog(error,'请求异常');
     return Promise.reject(error);
 });
 
@@ -56,6 +59,7 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(config => {
     return config.data;
 }, error => {
+    log.writeExLog(error,'响应异常');
     return Promise.reject(error);
 })
 

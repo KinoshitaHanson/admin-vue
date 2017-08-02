@@ -209,6 +209,7 @@ export default {
 
   },
   mounted() {
+    // m.o=0;
     this.initTagCategory();
     this.getData();
   },

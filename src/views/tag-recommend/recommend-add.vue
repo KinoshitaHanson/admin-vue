@@ -44,10 +44,6 @@ export default {
                 tagList: [],
                 visible: "1"
             },
-            addForm: {
-                name: '',
-                category: 1
-            },
             rules: [],
             sectionTree2: sectionTreeSource2,
             dialogVisible: false,

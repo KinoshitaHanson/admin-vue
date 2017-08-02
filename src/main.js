@@ -6,9 +6,11 @@ import router from "./router";
 import store from "./store";
 import nprogress from "nprogress";
 
+
 import App from "./App";
 import Fetch from "./plugins/fetch/fetch";
 import AliOss from "./plugins/alioss/alioss";
+import Log from "./plugins/log/log";
 
 import "styles/normalize.css";
 import "styles/common";
@@ -17,16 +19,27 @@ import "nprogress/nprogress.css"; // Progress 进度条 样式
 
 Vue.config.productionTip = false;
 
+
+Vue.config.errorHandler = function (err, vm, info) {
+  console.log(err,info);
+}
+
+
+
+
 Vue.use(ElementUI);
 Vue.use(Fetch);
 Vue.use(AliOss);
+Vue.use(Log,{user:store.state.user.name,env:process.env.NODE_ENV});
 
 const whiteList = ["/Login"];
 
 router.beforeEach((to, from, next) => {
   //切换路由清除loading
-  if(document.getElementsByClassName('el-loading-mask').length>0)
-    document.body.removeChild(document.getElementsByClassName('el-loading-mask')[0])
+  if (document.getElementsByClassName("el-loading-mask").length > 0)
+    document.body.removeChild(
+      document.getElementsByClassName("el-loading-mask")[0]
+    );
 
   nprogress.start();
   if (store.getters.token) {
@@ -50,11 +63,10 @@ router.beforeEach((to, from, next) => {
 
 router.afterEach(() => nprogress.done());
 
-if (process.env == "production") {
-  Vue.config.errorHandler = function(err, vm) {
-    console.log(err);
-  };
-}
+// if (process.env == "production") {
+
+// }
+
 
 /* eslint-disable no-new */
 new Vue({

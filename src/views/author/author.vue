@@ -138,7 +138,6 @@ export default {
                 target: '.table-container',
                 body: true
             })
-
             let params = {
                 authorId: this.form.id||0,
                 name: this.form.name,
@@ -149,7 +148,6 @@ export default {
                 num:this.pageIndex,
                 size:this.pageSize
             }
-
             try {
                 let res = await AuthorSelect(params);
                 if (res.result) {
@@ -164,7 +162,7 @@ export default {
                     this.totalCount = res.count;
                 }
             } catch (error) {
-                console.log(error)
+                this.$log.writeExLog(error)
                 this.$message.error('查询异常！');
             }
 
