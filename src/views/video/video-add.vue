@@ -14,12 +14,6 @@
         <el-input v-model="form.author"></el-input>
       </el-form-item>
       <el-form-item label="简介" prop="content" style="height:500px;">
-        <!-- <el-input
-          type="textarea"
-          :autosize="{ minRows: 4, maxRows: 10}"
-          placeholder="请输入内容"
-          v-model="form.content">
-        </el-input> -->
         <quill-editor v-model="form.content" ref="myQuillEditor" :options="quillOption" style="height:400px;">
         </quill-editor>
       </el-form-item>
@@ -48,7 +42,7 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="排序值" prop="sort">
-        <el-input type="sort" v-model.number="form.sort" auto-complete="off"></el-input>
+        <el-input-number v-model="form.sort"></el-input-number>
       </el-form-item>
       <el-form-item label="是否显示" prop="visible">
         <el-radio-group v-model="form.visible">

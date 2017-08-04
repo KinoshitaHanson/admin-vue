@@ -1,5 +1,4 @@
 import $fetch from 'utils/fetch';
-// let $fetch ={}
 
 //登录
 export const Login = (params) => {return $fetch.form('/management/admin/login', params)};
@@ -64,4 +63,41 @@ export const VideoSelectOne = (params)=> $fetch.get('/management/video/selectOne
 //视频管理-更新or新增
 export const VideoCommit = (params)=> $fetch.form('/management/video/insertOrUpdate', params);
 
+//图片管理-查询
+export const PictureSelect = (params) => $fetch.get('/management/picture/selectPictureList',{params} );
 
+//图片管理-查询
+export const PictureSelectOne = (params) => $fetch.get('/management/picture/selectPictureDetail',{params} );
+
+//图片管理-修改
+export const PictureUpdate = (params)=> $fetch.form('/management/picture/updatePicture', params );
+
+//机器人管理-美图-分类查询
+export const RobotPictureCategorySelect = (params)=> $fetch.get('/management/prettyPic/category', { params });
+
+//机器人管理-美图-查询
+export const RobotPictureSelect = (params)=> $fetch.get('/management/prettyPic/selectPrettyPic', { params });
+
+//机器人管理-美图-查询
+export const RobotPictureSelectOne = (params)=> $fetch.get('/management/prettyPic/selectPrettyPicDetail', { params });
+
+//机器人管理-美图-新增
+export const RobotPictureAdd = (params)=> $fetch.form('/management/prettyPic/add', params );
+
+//机器人管理-美图-修改
+export const RobotPictureUpdate = (params)=> $fetch.form('/management/prettyPic/update', params );
+
+//机器人管理-表情包-分类查询
+export const RobotStickerCategorySelect = (params)=> $fetch.get('/management/picPackage/category', { params });
+
+//机器人管理-表情包-查询
+export const RobotStickerSelect = (params)=> $fetch.get('/management/picPackage/selectPicPackage', { params });
+
+//机器人管理-表情包-查询
+export const RobotStickerSelectOne = (params)=> $fetch.get('/management/picPackage/selectPicPackageDetail', { params });
+
+//机器人管理-表情包-新增
+export const RobotStickerAdd = (params)=> $fetch.form('/management/picPackage/selectPicPackage',params);
+
+//机器人管理-表情包-修改
+export const RobotStickerUpdate = (params)=> $fetch.form('/management/picPackage/update',  params );

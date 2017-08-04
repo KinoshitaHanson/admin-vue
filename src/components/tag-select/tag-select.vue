@@ -103,7 +103,6 @@ export default {
 <style lang="less" scoped>
 
 .el-tag {
-    margin: 0 4px 0 0;    
     cursor: pointer;
 }
 

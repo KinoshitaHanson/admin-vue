@@ -13,15 +13,21 @@
             <el-form-item label="简介" prop="desc">
                 <el-input type="textarea" v-model="form.desc"></el-input>
             </el-form-item>
-            <el-form-item label="老归属" prop="category">
-                <el-cascader :options="sectionTree" v-model="form.category" @change="handleChange">
-                </el-cascader>
-            </el-form-item>
-            <el-form-item label="新归属" prop="categoryNew">
-                <el-select v-model="form.categoryNew" placeholder="请选择新归属">
-                    <el-option v-for="o in sectionTree2" :key="o.name" :label="o.name" :value="o.value"></el-option>
-                </el-select>
-            </el-form-item>
+            <el-row>
+                <el-col :span="8">
+                    <el-form-item label="老归属" prop="category">
+                        <el-cascader :options="sectionTree" v-model="form.category" @change="handleChange">
+                        </el-cascader>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="新归属" prop="categoryNew">
+                        <el-select v-model="form.categoryNew" placeholder="请选择新归属">
+                            <el-option v-for="o in sectionTree2" :key="o.name" :label="o.name" :value="o.value"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
             <el-form-item label="属性" prop="property">
                 <el-radio-group v-model="form.property">
                     <el-radio label="0">文章</el-radio>
@@ -36,7 +42,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="排序值" prop="sort">
-                <el-input type="sort" v-model.number="form.sort" auto-complete="off"></el-input>
+                <el-input-number v-model="form.sort"></el-input-number>
             </el-form-item>
             <el-form-item label="是否显示" prop="visible">
                 <el-radio-group v-model="form.visible">
@@ -142,7 +148,7 @@ export default {
                         father: this.form.category[0],
                         son: this.form.category[1],
                         grandson: this.form.category[2],
-                        tagCategory:this.form.categoryNew,
+                        tagCategory: this.form.categoryNew,
                         weight: this.form.sort,
                         type: this.form.property,
                         newType: this.form.property,
@@ -183,7 +189,7 @@ export default {
                     this.form.imageUrl = res.data.icon;
                     this.form.desc = res.data.summary;
                     this.form.category = [res.data.father, res.data.son, res.data.grandson];
-                    this.form.categoryNew = res.data.tagCategory==0?'':res.data.tagCategory;
+                    this.form.categoryNew = res.data.tagCategory == 0 ? '' : res.data.tagCategory;
                     this.form.property = res.data.type;
                     this.form.recommend = res.data.leak;
                     this.form.sort = res.data.weight;
@@ -200,12 +206,12 @@ export default {
         },
 
         onCancel() {
-            this.$router.push({path:'/Author'})
+            this.$router.push({ path: '/Author' })
         }
     },
 
     mounted() {
-        this.$route.params.Id&&(this.form.id = this.$route.params.Id);
+        this.$route.params.Id && (this.form.id = this.$route.params.Id);
         if (this.form.id) this.getData();
 
     }

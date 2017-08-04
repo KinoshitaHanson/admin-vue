@@ -52,7 +52,7 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="排序值" prop="sort">
-        <el-input type="sort" v-model.number="form.sort" auto-complete="off"></el-input>
+       <el-input-number v-model="form.sort"></el-input-number>
       </el-form-item>
       <el-form-item label="是否显示" prop="visible">
         <el-radio-group v-model="form.visible">

@@ -99,7 +99,7 @@ export default {
                 categoryNew: '',
                 status: '',
                 dateRange: [],
-                tag:''
+                tag: ''
             },
             totalCount: 0,//总数
             pageIndex: 1,//页码
@@ -196,7 +196,7 @@ export default {
                 son: this.form.category[1],
                 grandson: this.form.category[2],
                 tagCategory: this.form.categoryNew,
-                tagName:this.form.tag,
+                tagName: this.form.tag,
                 num: this.pageIndex,
                 size: this.pageSize,
             }
@@ -209,14 +209,16 @@ export default {
 
                 } else {
                     this.sourceData = [];
-                    console.log(res.message)
+                    this.$message.error('查询异常！' + res.message);
+
                 }
 
                 if (this.totalCount != res.count && (res.count != 0 || !res.result)) {
                     this.totalCount = res.count;
                 }
             } catch (error) {
-                console.log(error)
+                this.$message.error('查询异常！');
+
             }
 
             loading.close();

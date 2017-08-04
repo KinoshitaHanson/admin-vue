@@ -32,7 +32,7 @@
                 </el-table-column>
                 <el-table-column prop="picture" label="图片" width="180">
                     <template scope="scope">
-                        <img v-bind:src="scope.row.picture" @click="imgPreview(scope.row.picture)"/>
+                        <img v-bind:src="scope.row.picture" @click="imgPreview(scope.row.picture)" />
                     </template>
                 </el-table-column>
                 <el-table-column prop="releaseTime" label="外显时间">
@@ -65,7 +65,7 @@
 
 <script>
 import * as enums from 'utils/enum';
-import { AdGallerySelect,AdGalleryCommit } from 'api';
+import { AdGallerySelect, AdGalleryCommit } from 'api';
 
 export default {
     name: 'AdvertisementGallery',
@@ -100,23 +100,23 @@ export default {
                     module: enums.ModuleType[m.type.toString()],
                     toId: m.link,
                     sort: m.weight,
-                    loading:false,
-                    visible:m.status
+                    loading: false,
+                    visible: m.status
                 }
             });
         }
     },
 
     methods: {
+
         handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
             this.pageIndex = val;
-            this.getData(this.pageIndex, this.pageSize);
+            this.getData();
         },
         onSubmit() {
 
             if (this.pageIndex == 1) {
-                this.getData(this.pageIndex, this.pageSize)
+                this.getData()
             } else {
                 this.pageIndex = 1
             };
@@ -139,7 +139,7 @@ export default {
         },
 
         //数据源查询
-        async getData(pageIndex, pageSize) {
+        async getData() {
             let loading = this.$loading({
                 target: '.table-container',
                 body: true
@@ -148,25 +148,28 @@ export default {
             let params = {
                 bannerId: this.form.id,
                 mold: this.form.type,
-                status: this.form.status
+                status: this.form.status,
+                num: this.pageIndex,
+                size: this.pageSize
             }
 
 
             try {
-                let res = await AdGallerySelect(Object.assign(params, { num: pageIndex, size: pageSize }));
+                let res = await AdGallerySelect(params);
                 if (res.result) {
                     this.sourceData = res.map;
 
                 } else {
                     this.sourceData = [];
-                    console.log(res.message)
+                    this.$message.error('提交异常！' + res.message);
                 }
 
                 if (this.totalCount != res.count && (res.count != 0 || !res.result)) {
                     this.totalCount = res.count;
                 }
             } catch (error) {
-                console.log(error);
+                this.$message.error('提交异常！');
+                this.$log.writeExLog(error);
             }
             loading.close();
         },
@@ -203,37 +206,20 @@ export default {
 
     },
     mounted() {
-        this.getData(this.pageIndex, this.pageSize);
+        this.getData();
     }
 }
 </script>
 
 
 <style lang="less" scoped>
-.form-container {
-    margin-bottom: 12px;
-    border-bottom: 1px solid #efefef;
-}
-
-.pagin-container {
-    margin: 12px 0;
-    text-align: center;
-}
-
-.table-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center; // height: 100%;
-}
-
 img {
     width: 100%;
     height: 100%;
     vertical-align: middle;
 }
 
-.cell>img{
+.cell>img {
     cursor: pointer;
 }
 </style>

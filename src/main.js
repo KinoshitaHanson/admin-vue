@@ -24,9 +24,6 @@ Vue.config.errorHandler = function (err, vm, info) {
   console.log(err,info);
 }
 
-
-
-
 Vue.use(ElementUI);
 Vue.use(Fetch);
 Vue.use(AliOss);
